@@ -1,0 +1,55 @@
+﻿@using ASP.NET_Humans.Controllers
+@using ASP.NET_Humans.Models
+
+
+@model List<Worker>;
+@{
+    ViewData["Title"] = "Home Page";
+
+}
+
+<div class="text-center">
+    <table>
+        <tr>
+            <td>Name</td>
+            @foreach (var mod in Model)
+            {
+                <td>@mod.Name</td>
+            }
+        </tr>
+
+        <tr>
+         <td>Sex</td>  
+            @foreach (var mod in Model)
+            {
+                <td>@mod.Sex</td>
+            }
+        </tr>
+
+        <tr>
+            <td>Age</td>
+            @foreach (var mod in Model)
+            {
+                <td>@mod.Age</td>
+            }
+        </tr>
+        <tr>
+            <td>Salary</td>
+            @foreach (var mod in Model)
+            {
+                <td>@mod.Salary</td>
+            }
+        </tr>
+        <tr>
+            <td>Image</td>
+            @foreach (var mod in Model)
+            {
+                var path = ("/Images/Used/" + mod.Name + ".jpg");
+                <td><img src="@path" alt=":D" width="200" height="200"></td>
+            }
+        </tr>
+
+        
+    </table>
+     @{ int t = Model.Capacity; }
+</div>

@@ -1,0 +1,25 @@
+﻿{
+  "TrainingConfigurationVersion": 0,
+  "TrainingTime": 2147482,
+  "Scenario": {
+    "ScenarioType": "ImageClassification"
+  },
+  "DataSource": {
+    "DataSourceType": "Folder",
+    "FolderPath": "C:\\Users\\Anabolkick\\Desktop\\New folder"
+  },
+  "Environment": {
+    "EnvironmentType": "LocalGPU"
+  },
+  "RunHistory": {
+    "Trials": [
+      {
+        "TrainerName": "ImageClassification",
+        "Score": 0.8385,
+        "RuntimeInSeconds": 683.9
+      }
+    ],
+    "Pipeline": "[{\"EstimatorType\":\"MapValueToKey\",\"Inputs\":[\"Label\"],\"Outputs\":[\"Label\"]},{\"EstimatorType\":\"LoadRawImageBytes\",\"Inputs\":[\"ImageSource\"],\"Outputs\":[\"ImageSource_featurized\"]},{\"EstimatorType\":\"CopyColumns\",\"Inputs\":[\"ImageSource_featurized\"],\"Outputs\":[\"Features\"]},{\"LabelColumnName\":\"Label\",\"EstimatorType\":\"ImageClassificationMulti\",\"Inputs\":[\"Features\"],\"Outputs\":[\"Score\"]},{\"EstimatorType\":\"MapKeyToValue\",\"Inputs\":[\"PredictedLabel\"],\"Outputs\":[\"PredictedLabel\"]}]",
+    "MetricName": "MicroAccuracy"
+  }
+}
