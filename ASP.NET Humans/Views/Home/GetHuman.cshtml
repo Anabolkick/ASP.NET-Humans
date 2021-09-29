@@ -4,52 +4,69 @@
 
 @model List<Worker>;
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Get Human Page";
 
 }
 
 <div class="text-center">
+
     <table>
         <tr>
-            <td>Name</td>
-            @foreach (var mod in Model)
-            {
-                <td>@mod.Name</td>
-            }
-        </tr>
+            
+            <td>
+                <table>
+                    <tr>
+                        <td>Name</td>
+                    </tr>
 
-        <tr>
-         <td>Sex</td>  
-            @foreach (var mod in Model)
-            {
-                <td>@mod.Sex</td>
-            }
-        </tr>
+                    <tr>
+                        <td>Sex</td>
+                    </tr>
 
-        <tr>
-            <td>Age</td>
+                    <tr>
+                        <td>Age</td>
+                    </tr>
+                    <tr>
+                        <td>Salary</td>
+                    </tr>
+                    <tr>
+                       
+                        <td><img src="~/img/empty.png" alt=":D" width="200" height="200"></td>
+                    </tr>
+                </table>
+            </td>
             @foreach (var mod in Model)
             {
-                <td>@mod.Age</td>
-            }
-        </tr>
-        <tr>
-            <td>Salary</td>
-            @foreach (var mod in Model)
-            {
-                <td>@mod.Salary</td>
-            }
-        </tr>
-        <tr>
-            <td>Image</td>
-            @foreach (var mod in Model)
-            {
-                var path = ("/Images/Used/" + mod.Name + ".jpg");
-                <td><img src="@path" alt=":D" width="200" height="200"></td>
-            }
-        </tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td>@mod.Name</td>
 
-        
+                        </tr>
+
+                        <tr>
+                            <td>@mod.Sex</td>
+
+                        </tr>
+
+                        <tr>
+                            <td>@mod.Age</td>
+
+                        </tr>
+                        <tr>
+                            <td>@mod.Salary</td>
+
+                        </tr>
+                        <tr>
+                            @{
+                                var path = ("/Images/Used/" + mod.Name + ".jpg");
+                            }
+                            <td><img src="@path" alt=":D" width="200" height="200"></td>
+
+                        </tr>
+                    </table>
+                </td>
+            }
+        </tr>
     </table>
-     @{ int t = Model.Capacity; }
 </div>

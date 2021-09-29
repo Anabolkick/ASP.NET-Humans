@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 
@@ -16,9 +17,15 @@ namespace ASP.NET_Humans.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public string Developer { get; }
+        public string Name { get; }
+
+
+        public HomeController(ILogger<HomeController> logger, IOptions<AnabolkickCompany> AnabComp)
         {
             _logger = logger;
+            Name = AnabComp.Value.Name;
+            Developer = AnabComp.Value.Developer;
         }
 
         public IActionResult GetHuman()
@@ -29,21 +36,23 @@ namespace ASP.NET_Humans.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var temp = (Name, Developer);
+            return View(temp);
         }
 
         public IActionResult Privacy()
         {
             int t = 5;
-         //   Generators.SavePhotos(20);
-         //   Generators.GetPhotoName("female");
+            ViewData["worker"] = "lalalala";
+            //   Generators.SavePhotos(20);
+            //   Generators.GetPhotoName("female");
             return View(t);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error_404()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
         }
     }
 

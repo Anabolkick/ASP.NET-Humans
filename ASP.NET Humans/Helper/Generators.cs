@@ -87,13 +87,19 @@ namespace ASP.NET_Humans
 
             foreach (Worker worker in workers)
             {
+
+                //TOIDO CHANGE GOTO
                 var tmp = GetPhotoName(worker.Sex.ToString().ToLower());
+            check:
                 if (tmp != null)
                 {
                     File.Move(@$"wwwroot\Images\{tmp}", @$"wwwroot\Images\Used\{worker.Name}.jpg");
                 }
-             
-
+                else
+                {
+                    SavePhotos(1);
+                    goto check;
+                }
             }
 
             return workers;
@@ -101,37 +107,73 @@ namespace ASP.NET_Humans
 
         public static async Task SavePhotosAsync(int count)
         {
-            await Task.Run(() => SavePhotos(count));                // выполняется асинхронно
+            await Task.Run(() =>
+            {
+                YOModel.ModelInput sampleData = new YOModel.ModelInput();
+                string path = @$"wwwroot\Images\{Task.CurrentId}.jpg";
+
+                using (WebClient client = new WebClient())
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        again:
+                        client.DownloadFile("https://thispersondoesnotexist.com/image", path);
+                        sampleData.ImageSource = path;
+                        var predict = YOModel.Predict(sampleData);
+
+
+                        if (predict.Prediction == "male")
+                        {
+                            File.Move(path, @$"wwwroot\Images\male{i + Task.CurrentId}.jpg");
+                        }
+                        else if (predict.Prediction == "female")
+                        {
+                            File.Move(path, @$"wwwroot\Images\female{i + Task.CurrentId}.jpg");
+                        }
+
+                        else
+                        {
+                            goto again;
+                        }
+
+                        // File.Delete(@$"wwwroot\Images\{worker.Name}.jpg");         //TODO add to delete list and then delete to improve working speed
+                    }
+
+                }
+            }); // выполняется асинхронно
         }
         public static void SavePhotos(int count)
         {
             YOModel.ModelInput sampleData = new YOModel.ModelInput();
 
-            string path = @$"wwwroot\Images\{Task.CurrentId}.jpg";
+            int seed = new Random().Next();
+            var path = @$"wwwroot\Images\{seed}.jpg";
+
 
             using (WebClient client = new WebClient())
             {
                 for (int i = 0; i < count; i++)
                 {
-                    again: 
-                    client.DownloadFile("https://thispersondoesnotexist.com/image", path); 
+                    again:
+                    client.DownloadFile("https://thispersondoesnotexist.com/image", path);
                     sampleData.ImageSource = path;
                     var predict = YOModel.Predict(sampleData);
 
 
                     if (predict.Prediction == "male")
                     {
-                        File.Move(path, @$"wwwroot\Images\male{i+ Task.CurrentId}.jpg");
+                        File.Move(path, @$"wwwroot\Images\male{i}_{seed}.jpg");
                     }
                     else if (predict.Prediction == "female")
                     {
-                        File.Move(path, @$"wwwroot\Images\female{i + Task.CurrentId}.jpg");
+                        File.Move(path, @$"wwwroot\Images\female{i}_{seed}.jpg");
                     }
 
                     else
                     {
                         goto again;
                     }
+
 
                     // File.Delete(@$"wwwroot\Images\{worker.Name}.jpg");         //TODO add to delete list and then delete to improve working speed
                 }
@@ -148,7 +190,6 @@ namespace ASP.NET_Humans
                     .FirstOrDefault(name => name.StartsWith(sex));
 
             return firstFileName;
-
         }
 
 

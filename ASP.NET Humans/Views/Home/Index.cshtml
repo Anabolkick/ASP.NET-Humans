@@ -1,12 +1,15 @@
-﻿@model int;
+﻿@using Microsoft.Extensions.Configuration
+@using ASP.NET_Humans.Controllers
+
+@model (string Name, string Developer);
 @{
     ViewData["Title"] = "Home Page";
 
-    
 }
 
 <div class="text-center">
-    <h1 class="display-4">Anabolkick site</h1>
+    <h1 class="display-4">@Model.Name</h1> 
+    <h2 class="display-6">Developed by @Model.Developer</h2>
     <hr size="3" color="black" />
     <div>
         <nav class="nav nav-pills flex-column flex-sm-row">
