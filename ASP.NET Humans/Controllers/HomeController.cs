@@ -43,7 +43,9 @@ namespace ASP.NET_Humans.Controllers
         public IActionResult Privacy()
         {
             int t = 5;
-            ViewData["worker"] = "lalalala";
+            ViewData["lala"] = "lalalala";
+            var worker = Generators.GenerateWorker();
+            ViewData["worker"] = worker;
             //   Generators.SavePhotos(20);
             //   Generators.GetPhotoName("female");
             return View(t);

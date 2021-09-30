@@ -5,8 +5,11 @@
 @model int;
 <h1>@ViewData["Title"]</h1>
 
-<h2>@ViewData["worker"]</h2>
+<h2>@{ var worker = (ViewData["worker"] as Worker);}</h2>     
 
-<p>Use this page to detail your site's privacy policy.</p>
+<h2>@ViewData["lala"]</h2>
+
+<p>Use this page to detail your site's privacy policy.</p>     
+<p>@worker.Name</p>
 <br/>
 
