@@ -40,6 +40,7 @@ namespace ASP.NET_Humans
             services.AddControllersWithViews();
             services.AddDbContext<AppDbContext>(x =>
                 x.UseSqlServer(Configuration.GetConnectionString("LocalDatabase")));
+           // services.AddHostedService<BgDownloadService>();
 
             services.Configure<AnabolkickCompany>(Configuration.GetSection("AnabolkickCompany"));
         }
@@ -80,13 +81,19 @@ namespace ASP.NET_Humans
 
             app.UseEndpoints(endpoints =>
             {
+                //endpoints.MapControllerRoute(
+                //    name: "default",
+                //    pattern: "{controller=Home}/{action=Index}/{id:int?}");
+
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id:int?}");
+                    pattern: "{controller=Home}/{action=Tutor}/{id:int?}");
+
+
             });
 
           
-
+            // Last middleware 
             //app.Run(async context =>
             //{
             //    await Generators.SavePhotosAsync(1);

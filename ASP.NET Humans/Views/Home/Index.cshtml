@@ -1,7 +1,4 @@
-﻿@using Microsoft.Extensions.Configuration
-@using ASP.NET_Humans.Controllers
-
-@model (string Name, string Developer);
+﻿@model (string Name, string Developer);
 @{
     ViewData["Title"] = "Home Page";
 
@@ -13,7 +10,9 @@
     <hr size="3" color="black" />
     <div>
         <nav class="nav nav-pills flex-column flex-sm-row">
-            <a asp-controller="Home" asp-action="GetHuman"> Get Human Method</a>
+            <a asp-controller="Home" asp-action="Privacy"> Privacy</a> 
+            @Html.Partial("Privacy")     
+           
         </nav>
     </div>
     <br />

@@ -11,8 +11,8 @@ namespace ASP.NET_Humans.Domain
     {
        // public DbSet<User> User { get; set; }
         public DbSet<Worker> Workers { get; set; }
-        public DbSet<Cook> Cooks { get; set; }
-        public DbSet<Сourier> Сouriers { get; set; }
+       // public DbSet<Cook> Cooks { get; set; }
+       // public DbSet<Сourier> Сouriers { get; set; }
         public DbSet<Company> Companies { get; set; }
 
         //public AppDbContext()

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.ML;
@@ -36,28 +37,37 @@ namespace ASP.NET_Humans.Controllers
 
         public IActionResult Index()
         {
+            Generators.SavePhotos(2);
+
             var temp = (Name, Developer);
             return View(temp);
         }
 
+        public IActionResult Tutor()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
-            int t = 5;
-            ViewData["lala"] = "lalalala";
+            ViewBag.Lal = "lalalala";
+            return View();
+        }
+
+        public IActionResult TestThis(Worker wk)
+        {
             var worker = Generators.GenerateWorker();
-            ViewData["worker"] = worker;
-            //   Generators.SavePhotos(20);
-            //   Generators.GetPhotoName("female");
-            return View(t);
+            worker.Age = wk.Age;
+            worker.Name = wk.Name;
+            return View("Error_404", worker);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error_404()
         {
+            
             return View();
         }
     }
-
-
 
 }

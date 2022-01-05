@@ -2,14 +2,22 @@
     ViewData["Title"] = "Privacy Policy";
 }
 
-@model int;
-<h1>@ViewData["Title"]</h1>
 
-<h2>@{ var worker = (ViewData["worker"] as Worker);}</h2>     
 
-<h2>@ViewData["lala"]</h2>
-
-<p>Use this page to detail your site's privacy policy.</p>     
-<p>@worker.Name</p>
+<head>
+    <title>User registration</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+</head>
+<body>  
+<h1>@ViewBag.Lal</h1>
 <br/>
+<form method="post" action="~/Home/TestThis">
+    <label>Name:</label><br />
+    <input type="text" name="wk.name" /><br />
+    <label>Age:</label><br />
+    <input type="number" name="wk.age" /><br />
+    <input type="submit" value="Register" />
+</form>
+</body>
 
