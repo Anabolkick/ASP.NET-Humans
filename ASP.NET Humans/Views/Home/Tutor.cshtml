@@ -1,11 +1,21 @@
-﻿<!DOCTYPE html> 
+﻿@using Microsoft.Extensions.Options
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
 
-<html>
-    <head>
-     <title>Tutor page</title>
-    </head>
-
-    <body>
-
-    </body>
-</html>
+<head>
+    <title>User registration</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+</head>
+<body>
+    <h1>@ViewBag.Lal</h1>
+    <br />
+    <form method="post" action="~/Home/TestThis">
+        <label>Name:</label><br />
+        <input type="text" name="wk.name" /><br />
+        <label>Age:</label><br />
+        <input type="number" name="wk.age" /><br />
+        <input type="submit" value="Register" />
+    </form>
+</body>

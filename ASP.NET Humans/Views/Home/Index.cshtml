@@ -5,17 +5,16 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">@Model.Name</h1> 
+    <h1 class="display-4">@ViewData["Title"]</h1> 
     <h2 class="display-6">Developed by @Model.Developer</h2>
+
     <hr size="3" color="black" />
-    <div>
-        <nav class="nav nav-pills flex-column flex-sm-row">
-            <a asp-controller="Home" asp-action="Privacy"> Privacy</a> 
-            @Html.Partial("Privacy")     
-           
-        </nav>
+    <div class ="text-left">
+        <form method="post">
+            <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Privacy"> Privacy </button>    
+            <button style="background-color: lightpink;"  asp-controller="Home" asp-action="TestThis"> Test button </button>
+        </form>
     </div>
-    <br />
 </div>     
 
 

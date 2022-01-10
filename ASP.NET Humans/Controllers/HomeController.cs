@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.ML;
 using Microsoft.ML.Data;
+using RandomNameGen;
 
 namespace ASP.NET_Humans.Controllers
 {
@@ -29,15 +30,17 @@ namespace ASP.NET_Humans.Controllers
             Developer = AnabComp.Value.Developer;
         }
 
-        public IActionResult GetHuman()
+      //  [HttpPost]
+        [Route("Home/GetHuman/{id}")]
+        public IActionResult GetHuman(string id)
         {
-            var workers = Generators.GenerateWorkersWithPhoto(4);
+            var workers = Generators.GenerateWorkersWithPhoto(4, id);
             return View(workers);
         }
 
         public IActionResult Index()
         {
-            Generators.SavePhotos(2);
+            // Generators.SavePhotosAsync(1);
 
             var temp = (Name, Developer);
             return View(temp);
@@ -50,22 +53,34 @@ namespace ASP.NET_Humans.Controllers
 
         public IActionResult Privacy()
         {
-            ViewBag.Lal = "lalalala";
             return View();
         }
 
-        public IActionResult TestThis(Worker wk)
+
+        [Route("Home/GetPerson/{name}/{age}/{sex}")]
+        public IActionResult GetPerson(string name, int age, Sex sex)
         {
-            var worker = Generators.GenerateWorker();
-            worker.Age = wk.Age;
-            worker.Name = wk.Name;
-            return View("Error_404", worker);
+            Worker worker = new Worker();
+            worker.Name = name;
+            worker.Age = age;
+            worker.Sex = sex;
+            return View(worker);
         }
+
+        //public IActionResult TestThis(Worker wk)
+        //{
+        //    var worker = Generators.GenerateWorker();
+        //    //worker.Age = wk.Age;
+        //    worker.Name = wk.Name;
+        //    Response.Redirect($"/Home/GetPerson&worker={wk.Name}");
+
+        //    var s = Request.QueryString.Value;
+        //    return View($"GetPerson&worker={wk.Name}", worker);
+        //}
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error_404()
         {
-            
             return View();
         }
     }

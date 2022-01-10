@@ -10,8 +10,7 @@ namespace ASP.NET_Humans.ML
     public class GenderPrediction
     {
         [ColumnName("Male")]
-        public string PredictedMle { get; set; }
-        [ColumnName("male")]
-        public string Predictedmale { get; set; }
+        public string PredictedMale { get; set; }
+
     }
 }

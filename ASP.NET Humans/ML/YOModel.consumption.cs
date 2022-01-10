@@ -58,5 +58,15 @@ namespace ASP.NET_Humans
             ModelOutput result = predEngine.Predict(input);
             return result;
         }
+
+        public static IEnumerable<ModelOutput> PredictGroup(IEnumerable<ModelInput> models)
+        {
+            MLContext mlContext = new MLContext();
+            ITransformer mlModel = mlContext.Model.Load(MLNetModelPath, out var modelInputSchema);
+            var predEngine = mlContext.Model.CreatePredictionEngine<ModelInput, ModelOutput>(mlModel);
+            var predictions = models.Select(input => predEngine.Predict(input));
+
+            return predictions;
+        }
     }
 }

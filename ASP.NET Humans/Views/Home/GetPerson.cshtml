@@ -1,0 +1,44 @@
+﻿@model Worker;
+@{
+    ViewData["Title"] = "Get Worker Person";
+}
+
+<div class="text-center">
+
+    <table>
+        <tr>
+
+            <td>
+                <table>
+                    <tr>
+                        <td>Name</td> 
+                        <td>@Model.Name</td>
+                    </tr>
+
+                    <tr>
+                        <td>Name</td>  
+                        <td>@Model.Sex</td>
+                    </tr>
+
+                    <tr>
+                        <td>Age</td>
+                        <td>@Model.Age</td>
+                    </tr>
+
+                    <tr>
+                        <td>Salary</td>
+                        <td>@Model.Salary</td>
+                    </tr>
+
+                    <tr>
+                        @{
+                            var path = ("/Images/TempUsed/"+Model.Sex.ToString().ToLower()+"_"+ Model.Name + ".jpg");
+                        } 
+                        <td><img src="~/img/empty.png" alt=":D" width="200" height="200"></td>
+                        <td><img src="@path" alt=":D" width="200" height="200"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>

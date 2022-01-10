@@ -7,12 +7,15 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using ASP.NET_Humans.Models;
+using Microsoft.ML;
 using RandomNameGen;
 
 namespace ASP.NET_Humans
 {
     public static class Generators
     {
+        static object locker = new object();
+        static object locker_2 = new object();
         private static (Sex sex, string name) GenerateName()
         {
             var rand = new Random();
@@ -21,6 +24,99 @@ namespace ASP.NET_Humans
             var name = nameGen.Generate(sex);
             return (sex, name);
         }
+        public static async void SavePhotosAsync(int count)
+        {
+            await Task.Run(() =>
+            {
+                SavePhotos(count);
+            });
+        }
+        private static void SavePhotos(int count)
+        {
+            lock (locker_2)
+            {
+                using (WebClient client = new WebClient())
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        bool done = false;
+                        client.DownloadFile("https://thispersondoesnotexist.com/image", @$"wwwroot\Images\Unchecked\{Thread.CurrentThread.ManagedThreadId}_{i}.jpg");
+                        Thread.Sleep(1000);
+                    }
+                }
+            }
+        }
+
+        private static void PredictGender()
+        {
+            lock (locker)
+            {
+                int seed = new Random().Next(Int32.MinValue, Int32.MaxValue);
+                DirectoryInfo dir = new DirectoryInfo(@$"wwwroot\Images\Unchecked");
+                var count = dir.GetFiles().Length;
+                List<YOModel.ModelInput> inputs = new List<YOModel.ModelInput>();
+
+                if (count <= 0)
+                {
+                    return;
+                }
+
+                for (int i = 0; i < count; i++)
+                {
+                    YOModel.ModelInput model = new YOModel.ModelInput();
+                    model.ImageSource = dir.GetFiles()[i].FullName;
+                    inputs.Add(model);
+                }
+
+                YOModel.ModelInput sampleData = new YOModel.ModelInput();
+
+                List<YOModel.ModelOutput> predict = new List<YOModel.ModelOutput>();
+                predict.AddRange(YOModel.PredictGroup(inputs));
+
+                for (int i = 0; i < count; i++)
+                {
+                    if (predict[i].Prediction == "male")
+                    {
+                        File.Move(inputs[i].ImageSource, @$"wwwroot\Images\Checked\male_{seed}_{i}.jpg");
+                    }
+                    else if (predict[i].Prediction == "female")
+                    {
+                        File.Move(inputs[i].ImageSource, @$"wwwroot\Images\Checked\female_{seed}_{i}.jpg");
+                    }
+                    else
+                    {
+                        File.Delete(inputs[i].ImageSource);
+                    }
+                }
+            }
+
+        }
+
+        private static string GetNameToPhoto(string sex)
+        {
+            DirectoryInfo di = new DirectoryInfo(@$"wwwroot\Images\Checked");
+
+            string firstFileName = di.GetFiles()
+                    .Select(fi => fi.Name)
+                    .FirstOrDefault(name => name.StartsWith(sex.ToLower()));
+
+            return firstFileName;
+        }
+
+        private static async void PredictToCountAsync(int count)
+        {
+            await Task.Run(() =>
+            {
+                var path = @"wwwroot\Images\Checked";
+                var dir = new DirectoryInfo(path);
+                var cur_count = dir.GetFiles().Length;
+                if (cur_count < count)
+                {
+                    SavePhotosAsync(cur_count - cur_count);
+                }
+                PredictGender();
+            });
+        }
 
         public static Worker GenerateWorker()
         {
@@ -28,27 +124,19 @@ namespace ASP.NET_Humans
             var profession = (Profession)rand.Next(2);
             Worker worker;
 
-            //switch (profession)
-            //{
-            //    case Profession.Cook:
-            //        worker = new Cook(GenerateName().name, GenerateName().sex, rand.Next(100, 1001), rand.Next(23, 50));
-            //        break;
-            //    case Profession.Courier:
-            //        worker = new Сourier(GenerateName().name, GenerateName().sex, rand.Next(100, 1001), rand.Next(23, 50));
-            //        break;
-            //    default:
-            //        worker = new Cook(GenerateName().name, GenerateName().sex, rand.Next(100, 1001), rand.Next(23, 50)); //TODO Exeption
-            //        Console.WriteLine("ERROR in Name Generator!");
-            //        break;
-            //}
-
             worker = new Worker() { Name = GenerateName().name, Sex = GenerateName().sex, Salary = rand.Next(100, 1001), Age = rand.Next(23, 50), Profession = profession.ToString() };
             return worker;
         }
 
-        public static List<Worker> GenerateWorkersWithPhoto(int count) //TODO if Prediction old chance > 40 set Age >35
+        public static List<Worker> GenerateWorkersWithPhoto(int count, string id) //TODO if Prediction old chance > 40 set Age >35
         {
             List<Worker> workers = new List<Worker>();
+            var id_folder_path = @$"wwwroot\Images\{id}";
+
+            if (!Directory.Exists(id_folder_path))
+            {
+                Directory.CreateDirectory(id_folder_path);
+            }
 
             for (int i = 0; i < count; i++)
             {
@@ -58,116 +146,25 @@ namespace ASP.NET_Humans
 
             foreach (Worker worker in workers)
             {
-                var photoName = GetNameToPhoto(worker.Sex.ToString());    //  Выдаем имя исходя из пола
                 bool done = false;
                 while (!done)
                 {
+                    var photoName = GetNameToPhoto(worker.Sex.ToString());    //  Выдаем имя исходя из пола
+
                     if (photoName != null)
                     {
-                        File.Move(@$"wwwroot\Images\{photoName}", @$"wwwroot\Images\Used\{worker.Name}.jpg");
+                        File.Move(@$"wwwroot\Images\Checked\{photoName}", @$"wwwroot\Images\{id}\{worker.Sex.ToString().ToLower()}_{worker.Name}.jpg");
                         done = true;
                     }
                     else
                     {
-                        SavePhotos(1);
+                        SavePhotosAsync(10);
+                        PredictGender();
                     }
                 }
             }
+            PredictToCountAsync(40);
             return workers;
-        }
-
-        //public static async Task SavePhotosAsync(int count)
-        //{
-        //    await Task.Run(() =>
-        //    {
-        //        YOModel.ModelInput sampleData = new YOModel.ModelInput();
-        //        string path = @$"wwwroot\Images\{Task.CurrentId}.jpg";
-
-        //        using (WebClient client = new WebClient())
-        //        {
-        //            for (int i = 0; i < count; i++)
-        //            {
-        //                again:
-        //                client.DownloadFile("https://thispersondoesnotexist.com/image", path);
-        //                sampleData.ImageSource = path;
-        //                var predict = YOModel.Predict(sampleData);
-
-
-        //                if (predict.Prediction == "male")
-        //                {
-        //                    File.Move(path, @$"wwwroot\Images\male{i + Task.CurrentId}.jpg");
-        //                }
-        //                else if (predict.Prediction == "female")
-        //                {
-        //                    File.Move(path, @$"wwwroot\Images\female{i + Task.CurrentId}.jpg");
-        //                }
-
-        //                else
-        //                {
-        //                    goto again;
-        //                }
-
-        //                // File.Delete(@$"wwwroot\Images\{worker.Name}.jpg");         //TODO add to delete list and then delete to improve working speed
-        //            }
-
-        //        }
-        //    }); // выполняется асинхронно
-        //}
-
-
-        //public static async void SavePhotosAsync(int count)
-        //{
-        //    await Task.Run(() => SavePhotos(count));
-        //}
-
-        public static void SavePhotos(int count)
-        {
-            Task.Run(() =>
-            {
-                YOModel.ModelInput sampleData = new YOModel.ModelInput();
-
-                int seed = new Random().Next(Int32.MinValue, Int32.MaxValue);
-                var path = @$"wwwroot\Images\{seed}.jpg";
-
-                using (WebClient client = new WebClient())
-                {
-                    for (int i = 0; i < count; i++)
-                    {
-                        bool done = false;
-                        while (!done)
-                        {
-                            client.DownloadFile("https://thispersondoesnotexist.com/image", path);
-                            sampleData.ImageSource = path;
-                            var predict = YOModel.Predict(sampleData);
-                            if (predict.Prediction == "male")
-                            {
-                                File.Move(path, @$"wwwroot\Images\male{i}_{seed}.jpg");
-                                done = true;
-                            }
-                            else if (predict.Prediction == "female")
-                            {
-                                File.Move(path, @$"wwwroot\Images\female{i}_{seed}.jpg");
-                                done = true;
-                            }
-                            else
-                            {
-                                File.Delete(path);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        public static string GetNameToPhoto(string sex)
-        {
-            DirectoryInfo di = new DirectoryInfo(@$"wwwroot\Images");
-
-            string firstFileName = di.GetFiles()
-                    .Select(fi => fi.Name)
-                    .FirstOrDefault(name => name.StartsWith(sex.ToLower()));
-
-            return firstFileName;
         }
 
 
