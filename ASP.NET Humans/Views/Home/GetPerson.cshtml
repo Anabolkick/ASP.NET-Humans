@@ -3,42 +3,42 @@
     ViewData["Title"] = "Get Worker Person";
 }
 
-<div class="text-center">
-
+<div style="color: indianred; font-size: larger">
     <table>
+        <style>
+            table {
+                width: 300px; /* Ширина таблицы */
+                border: 2px solid lightpink; /* Рамка вокруг таблицы */
+                margin: auto; /* Выравниваем таблицу по центру окна  */
+            }
+            td {
+                text-align: center; /* Выравниваем текст по центру ячейки */
+            }
+        </style> 
+
         <tr>
+            <td> <b> @Model.Name </b> </td>
+        </tr>
 
-            <td>
-                <table>
-                    <tr>
-                        <td>Name</td> 
-                        <td>@Model.Name</td>
-                    </tr>
+        <tr>
+            <td>@Model.Sex</td>
+        </tr>
 
-                    <tr>
-                        <td>Name</td>  
-                        <td>@Model.Sex</td>
-                    </tr>
+        <tr>
+            <td>@Model.Age</td>
+        </tr>
 
-                    <tr>
-                        <td>Age</td>
-                        <td>@Model.Age</td>
-                    </tr>
+        <tr>
+            <td>@Model.Salary</td>
+        </tr>
 
-                    <tr>
-                        <td>Salary</td>
-                        <td>@Model.Salary</td>
-                    </tr>
+        <tr>
+            @{
+               var path = ($"/Images/{Context.Connection.RemoteIpAddress.MapToIPv4()}/" + Model.Sex.ToString().ToLower() + "_" + Model.Name + ".jpg");
+              
+            }
 
-                    <tr>
-                        @{
-                            var path = ("/Images/TempUsed/"+Model.Sex.ToString().ToLower()+"_"+ Model.Name + ".jpg");
-                        } 
-                        <td><img src="~/img/empty.png" alt=":D" width="200" height="200"></td>
-                        <td><img src="@path" alt=":D" width="200" height="200"></td>
-                    </tr>
-                </table>
-            </td>
+            <td><img src="@path" alt=":D" width="300" height="300"></td>
         </tr>
     </table>
 </div>

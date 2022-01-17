@@ -1,0 +1,39 @@
+﻿@model ASP.NET_Humans.ViewModels.RegisterViewModel  
+
+<h2>Регистрация нового пользователя</h2>
+<form method="post" asp-controller="Account" asp-action="Register">
+    <div asp-validation-summary="All"></div>
+    <div>
+        <label asp-for="Email"></label><br />
+        <input asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>   
+    <br/>
+    <div>
+        <label asp-for="Name"></label><br />
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </div> 
+    <br/>
+    <div>
+        <label asp-for="Password"></label> <br />
+        <input asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+
+        @*
+        @Html.LabelFor(model => model.Password) <br/>
+        @Html.TextBoxFor(m => m.Password)
+        <span asp-validation-for="Password"></span>
+        *@
+    </div>
+    <br/>
+    <div>
+        <label asp-for="PasswordConfirm"></label><br />
+        <input asp-for="PasswordConfirm" />
+        <span asp-validation-for="PasswordConfirm"></span>
+    </div>  
+    <br/>
+    <div>
+        <input type="submit" value="Регистрация" />
+    </div>
+</form>

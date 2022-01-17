@@ -9,13 +9,11 @@ namespace ASP.NET_Humans.Models
         public string Name { get; set; }
         public int Age { get; set; }
         public string Profession { get; set; }   // = "Without profession"; //TODO ????
-
         public int Salary { get; set; }
 
         [NotMapped]
         public Sex Sex { get; set; }
         public int? CompanyId { get; set; } // внешний ключ
-        public Company Company { get; set; } // навигационное свойство
 
     }
 }

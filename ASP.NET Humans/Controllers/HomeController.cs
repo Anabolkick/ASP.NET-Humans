@@ -8,7 +8,10 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using RandomNameGen;
@@ -23,19 +26,32 @@ namespace ASP.NET_Humans.Controllers
         public string Name { get; }
 
 
-        public HomeController(ILogger<HomeController> logger, IOptions<AnabolkickCompany> AnabComp)
+        private RoleManager<IdentityRole> roleManager;
+        private UserManager<User> userManager;
+
+        public HomeController(ILogger<HomeController> logger, IOptions<AnabolkickCompany> AnabComp, RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
         {
             _logger = logger;
             Name = AnabComp.Value.Name;
             Developer = AnabComp.Value.Developer;
+            this.roleManager = roleManager;
+            this.userManager = userManager;
+
         }
 
-      //  [HttpPost]
-        [Route("Home/GetHuman/{id}")]
-        public IActionResult GetHuman(string id)
+        
+      //  [Authorize]
+        public IActionResult GetPeople(string login)
         {
-            var workers = Generators.GenerateWorkersWithPhoto(4, id);
-            return View(workers);
+            if (User.Identity.IsAuthenticated)
+            {
+                var workers = Generators.GenerateWorkersWithPhoto(4, login);
+                return View(workers);
+            }
+            else
+            {
+                return Redirect("~/Account/Login/");
+            }
         }
 
         public IActionResult Index()
@@ -46,42 +62,34 @@ namespace ASP.NET_Humans.Controllers
             return View(temp);
         }
 
-        public IActionResult Tutor()
+        public string Tutor()
         {
-            return View();
-        }
+            var elem = Request.Headers;
+            string res = "";
+            foreach (var VARIABLE in elem)
+            {
+                res += $"{VARIABLE.Key}  - {VARIABLE.Value} \n";
+            }
 
+            res += "\n request \n";
+            return res;
+        }
+    
         public IActionResult Privacy()
         {
             return View();
         }
 
-
-        [Route("Home/GetPerson/{name}/{age}/{sex}")]
-        public IActionResult GetPerson(string name, int age, Sex sex)
+        [HttpPost]
+        public IActionResult GetPerson(string name, int age, int salary, Sex sex)
         {
             Worker worker = new Worker();
             worker.Name = name;
             worker.Age = age;
+            worker.Salary = salary;
             worker.Sex = sex;
+
             return View(worker);
-        }
-
-        //public IActionResult TestThis(Worker wk)
-        //{
-        //    var worker = Generators.GenerateWorker();
-        //    //worker.Age = wk.Age;
-        //    worker.Name = wk.Name;
-        //    Response.Redirect($"/Home/GetPerson&worker={wk.Name}");
-
-        //    var s = Request.QueryString.Value;
-        //    return View($"GetPerson&worker={wk.Name}", worker);
-        //}
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error_404()
-        {
-            return View();
         }
     }
 

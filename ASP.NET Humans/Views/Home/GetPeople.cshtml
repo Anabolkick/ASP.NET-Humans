@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Worker>;
 @{
-    ViewData["Title"] = "Get Human Page";
+    ViewData["Title"] = "Get People Page";
 
 }
 
@@ -8,7 +8,6 @@
 
     <table>
         <tr>
-
             <td>
                 <table>
                     <tr>
@@ -52,15 +51,16 @@
                         </tr>
 
                         <tr>
+
                             @{
-                                var path = ($"/Images/{Context.Connection.RemoteIpAddress.MapToIPv4()}/" + mod.Sex.ToString().ToLower() + "_" + mod.Name + ".jpg");
+                                var path = ($"/Images/{Context.User.Identity.Name}/" + mod.Sex.ToString().ToLower() + "_" + mod.Name + ".jpg");
                             }
                             <td><img src="@path" alt="Can`t load image :D" width="200" height="200"></td>
                         </tr>
 
                         <tr>
                             <form method="post">
-                            <td><button asp-controller="Home" asp-route-name="@mod.Name" asp-route-age="@mod.Age" asp-route-sex="@mod.Sex" asp-action="GetPerson">Select</button> </td>
+                            <td> <button asp-controller="Home" asp-action="GetPerson" , asp-route-name="@mod.Name" asp-route-age="@mod.Age" asp-route-salary="@mod.Salary" asp-route-sex="@mod.Sex"> Select</button> </td>
                             </form>
 
                         </tr>

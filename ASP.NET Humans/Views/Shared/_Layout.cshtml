@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />      
+    <link rel="stylesheet" href="~/css/site.css" />
     <link rel="icon" href="/logo.ico" type="image/x-icon">
     <link rel="shortcut icon" href="/logo.ico" type="image/x-icon">
 </head>
@@ -24,10 +24,32 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-route-id="@Context.Connection.RemoteIpAddress.MapToIPv4()" asp-action="GetHuman" >Generate People</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-route-login ="@Context.User.Identity.Name" asp-action="GetPeople">Generate People</a>
                         </li>
                     </ul>
                 </div>
+                <ul class="navbar-nav ml-auto">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <p>@User.Identity.Name</p>
+                        </li>
+                        <li class="nav-item">
+                            <form method="post" asp-controller="Account" asp-action="Logout">
+                                <input type="submit" value="Logout" />
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                        </li>
+                    }
+                </ul>
             </div>
         </nav>
     </header>
@@ -39,7 +61,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-           &copy; | 2021 - ASP.NET_Humans | <a href="https://github.com/Anabolkick">Developer</a>
+            &copy; | 2021 - ASP.NET_Humans | <a href="https://github.com/Anabolkick">Developer</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -48,3 +70,4 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
