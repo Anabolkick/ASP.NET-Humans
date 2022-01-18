@@ -1,0 +1,20 @@
+﻿@model IEnumerable<User> 
+
+<h2>Users list</h2>
+  
+<table class="table">
+    @foreach(var user in Model)
+    {
+        <tr>
+            <td>
+                @user.UserName
+            </td>   
+            <td>
+                <form asp-action="EditUser" method="get">
+                    <input type="hidden" name="id" value="@user.Id" />
+                    <button type="submit" class="btn-info btn-primary">Edit</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>

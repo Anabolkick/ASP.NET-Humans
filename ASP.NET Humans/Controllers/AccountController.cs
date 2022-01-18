@@ -39,6 +39,8 @@ namespace ASP.NET_Humans.Controllers
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+
+                    var res = userManager.AddToRoleAsync(user, "User").Result;
                     // установка куки
                     await signInManager.SignInAsync(user, false);
                     return RedirectToAction("Index", "Home");
