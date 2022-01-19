@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using ASP.NET_Humans.Models;
@@ -43,6 +44,22 @@ namespace ASP.NET_Humans.Controllers
                     var res = userManager.AddToRoleAsync(user, "User").Result;
                     // установка куки
                     await signInManager.SignInAsync(user, false);
+
+                    string confirmationToken = userManager.GenerateEmailConfirmationTokenAsync(user).Result;
+
+                    string confirmationLink = Url.Action("ConfirmEmail", "Account", new
+                        {
+                            userid = user.Id,
+                            token = confirmationToken
+                        },
+                        protocol: HttpContext.Request.Scheme);
+
+                    SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
+                    client.Credentials = new System.Net.NetworkCredential("oleg10galysh@gmail.com", "kkronbmduhpvrach");
+                    client.EnableSsl = true;
+                    client.Send("oleg10galysh@gmail.com", user.Email, "Confirm your email", confirmationLink);
+
+
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -54,6 +71,21 @@ namespace ASP.NET_Humans.Controllers
                 }
             }
             return View(model);
+        }
+
+        public IActionResult ConfirmEmail(string userid, string token)
+        {
+            User user = userManager.FindByIdAsync(userid).Result;
+            var result = userManager.ConfirmEmailAsync(user, token).Result;
+
+            if (result.Succeeded)
+            {
+                return Problem("Email confirmed successfully!");
+            }
+            else
+            {
+                return Problem("Error while confirming your email!" + "\n" + result.Errors);
+            }
         }
 
         [HttpGet]
