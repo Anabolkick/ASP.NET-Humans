@@ -44,7 +44,8 @@ namespace ASP.NET_Humans
             services.AddIdentity<User, IdentityRole>(options =>
                 {
                     options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequiredUniqueChars = 8;
+                    options.Password.RequiredUniqueChars = 2;
+                    options.Password.RequireNonAlphanumeric = false;
                     options.User.RequireUniqueEmail = true;
                 })
                 .AddEntityFrameworkStores<AppDbContext>();

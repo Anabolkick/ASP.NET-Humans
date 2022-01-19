@@ -17,6 +17,12 @@ namespace ASP.NET_Humans.ViewModels
         [Display(Name = "Email Confirmed")]
         public bool EmailConfirmed { get; set; }
         public List<string> Roles { get; set; }
-        
+        public List<IdentityRole> AllRoles { get; set; }
+        public EditUserViewModel()
+        {
+            AllRoles = new List<IdentityRole>();
+            Roles = new List<string>();
+        }
+
     }
 }

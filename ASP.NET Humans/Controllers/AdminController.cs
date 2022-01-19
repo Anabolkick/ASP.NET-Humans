@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using ASP.NET_Humans.Models;
 using ASP.NET_Humans.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ASP.NET_Humans.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private UserManager<User> userManager;
@@ -33,13 +35,14 @@ namespace ASP.NET_Humans.Controllers
         public IActionResult EditUser(string id)
         {
             var user = userManager.FindByIdAsync(id).Result;
-            var roles = userManager.GetRolesAsync(user).Result.ToList();
-            EditUserViewModel editUser = new EditUserViewModel(){Email = user.Email, EmailConfirmed = user.EmailConfirmed, Id = user.Id, Login = user.UserName,Roles = roles};
+            var allRoles = roleManager.Roles.ToList();
+            var userRoles = userManager.GetRolesAsync(user).Result.ToList();
+            EditUserViewModel editUser = new EditUserViewModel(){Email = user.Email, EmailConfirmed = user.EmailConfirmed, Id = user.Id, Login = user.UserName,Roles = userRoles, AllRoles = allRoles};
             return View(editUser);
         }
 
         [HttpPost]
-        public IActionResult EditUser(EditUserViewModel model)
+        public IActionResult EditUser(EditUserViewModel model, List<string> picked_roles)
         {
             var user = userManager.FindByIdAsync(model.Id).Result;
             user.UserName = model.Login;
@@ -47,8 +50,16 @@ namespace ASP.NET_Humans.Controllers
             user.Id = model.Id;
             user.Email = model.Email;
             user.EmailConfirmed = model.EmailConfirmed;
-           // roleManager.Roles
+
+            var userRoles = userManager.GetRolesAsync(user).Result;
+            var addedRoles = picked_roles.Except(userRoles);
+            var removedRoles = userRoles.Except(picked_roles);
+
             var result = userManager.UpdateAsync(user).Result;
+
+            Task.Run(() => userManager.AddToRolesAsync(user, addedRoles)).Wait();
+            Task.Run(() => userManager.RemoveFromRolesAsync(user, removedRoles)).Wait();
+
             if (result.Succeeded)
             {
                return RedirectToAction("UsersList");
@@ -61,6 +72,21 @@ namespace ASP.NET_Humans.Controllers
                 }
 
                 return View(model);
+            }
+        }
+
+        public IActionResult DeleteUser(string id)
+        {
+            var user = userManager.FindByIdAsync(id).Result;
+            var result = userManager.DeleteAsync(user).Result;
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("UsersList");
+            }
+            else
+            {
+                return Problem(result.Errors.ToString());
             }
         }
 

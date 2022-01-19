@@ -15,16 +15,16 @@
 
 <form asp-action="EditUser" asp-controller="Admin" method="post">
     <div asp-validation-summary="All" class="text-danger"></div>
-    <hr/>
+    <hr />
 
-    <label asp-for="Id" class="col-md-4 control-label"> </label>
-    <div class="col-md-4">
+    <label asp-for="Id" class="col-lg control-label"> </label>
+    <div class="col-lg-5">
         <input type="text" asp-for="Id" class="form-control input-md" id="id_input" readonly />
     </div>
-    <hr/>
+    <hr />
 
-    <label asp-for="Login" class="col-md-4 control-label"> </label>
-    <div class="form-row col-md-4">
+    <label asp-for="Login" class="col-lg control-label"> </label>
+    <div class="form-row col-lg-10">
         <div class="col">
             <input type="text" asp-for="Login" class="form-control input-md" id="login" readonly />
         </div>
@@ -33,10 +33,10 @@
             <button type="button" class="btn" onclick="openField(login)"><i class="fa fa-edit" style="font-size:25px"></i></button>
         </div>
     </div>
-    <hr/>
+    <hr />
 
-    <label asp-for="Email" class="col-md-4 control-label"> </label>
-    <div class="form-row col-md-4">
+    <label asp-for="Email" class="col-lg control-label"> </label>
+    <div class="form-row col-lg-10">
         <div class="col">
             <input type="text" asp-for="Email" class="form-control input-md" id="email" readonly />
         </div>
@@ -45,7 +45,7 @@
             <button type="button" class="btn" onclick="openField(email)"><i class="fa fa-edit" style="font-size:25px"></i></button>
         </div>
     </div>
-    <hr/>
+    <hr />
 
     <div class="form-row">
         <div>
@@ -56,8 +56,23 @@
             <input type="checkbox" asp-for="EmailConfirmed" class="largerCheckbox" />
         </div>
     </div>
-    <hr/>    
+    <hr />
 
+    <div class="form-group">
+        Roles 
+        <br/>
+        <div class="col-md-4">
+            @{
+                foreach (var role in Model.AllRoles)
+                {
+                    <div>
+                        <input type="checkbox" class="largerCheckbox" value="@role.Name" id="@role.Name" name="picked_roles" @(Model.Roles.Contains(role.Name) ? "checked=\"checked\"" : "") />
+                        <label for="@role.Name"> @role.Name </label>
+                    </div>
+                }
+            }
+        </div>
+    </div>
 
     <div class="form-group">
         <input type="submit" value="Сохранить" class="btn btn-outline-secondary" />
@@ -81,14 +96,4 @@
     }*@
 
 <br />
-
-@*<h4>Roles</h4>
-    <ul>
-        @{
-            foreach (var role in Model.Roles)
-            {
-                <li>@role</li>
-            }
-        }
-    </ul>*@
 

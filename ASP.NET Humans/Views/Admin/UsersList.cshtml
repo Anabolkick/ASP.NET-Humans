@@ -1,20 +1,61 @@
-﻿@model IEnumerable<User> 
+﻿@model IEnumerable<User>
 
 <h2>Users list</h2>
-  
-<table class="table">
-    @foreach(var user in Model)
+<style>
+    #customers {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        #customers td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #customers tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #customers tr:hover {
+            background-color: #ddd;
+        }
+
+        #customers th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+</style>
+
+<table class="table" style="border: 3px transparent #04aa6d;">
+    @foreach (var user in Model)
     {
         <tr>
             <td>
                 @user.UserName
-            </td>   
+            </td>
             <td>
-                <form asp-action="EditUser" method="get">
-                    <input type="hidden" name="id" value="@user.Id" />
-                    <button type="submit" class="btn-info btn-primary">Edit</button>
-                </form>
+                <table style="border: transparent 0px solid; ">
+                    <tr>
+                        <td>
+                            <form asp-action="EditUser" method="get">
+                                <input type="hidden" name="id" value="@user.Id" />
+                                <button type="submit" class="btn-info btn-primary">Edit</button>
+                            </form>
+
+                            <form asp-action="DeleteUser" method="get">
+                                <input type="hidden" name="id" value="@user.Id" />
+                                <button type="submit" class="btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
     }
-</table>
+</table>  
+
+
