@@ -20,25 +20,25 @@
             <td> <b> @Model.Name </b> </td>
         </tr>
 
-        <tr>
+        @*<tr>
             <td>@Model.Sex</td>
         </tr>
 
         <tr>
             <td>@Model.Age</td>
-        </tr>
+        </tr>*@
 
         <tr>
             <td>@Model.Salary</td>
         </tr>
 
         <tr>
-            @{
+            @*@{
                var path = ($"/Images/{Context.Connection.RemoteIpAddress.MapToIPv4()}/" + Model.Sex.ToString().ToLower() + "_" + Model.Name + ".jpg");
               
             }
 
-            <td><img src="@path" alt=":D" width="300" height="300"></td>
+            <td><img src="@path" alt=":D" width="300" height="300"></td>*@
         </tr>
     </table>
 </div>

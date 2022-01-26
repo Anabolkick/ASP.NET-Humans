@@ -3,10 +3,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-
-Images/
+*/wwwroot/Images/Checked/*.jpg
+*/wwwroot/Images/Unchecked/*.jpg
+*/Images/Identified/*.jpg
+*/Images/Unidentified/*.jpg
+*/Images/Users/*.jpg
 !Images/Used
-Used/
 
 
 # User-specific files
@@ -15,6 +17,7 @@ Used/
 *.user
 *.userosscache
 *.sln.docstates
+
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -367,3 +370,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/ASP.NET Humans/wwwroot/Images/Checked/female_2133622358_3.jpg

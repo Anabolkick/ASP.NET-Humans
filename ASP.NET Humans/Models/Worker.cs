@@ -1,19 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using RandomNameGen;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASP.NET_Humans.Models
 {
     public class Worker
     {
-        public int Id { get;  set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
-        public int Age { get; set; }
-        public string Profession { get; set; }   // = "Without profession"; //TODO ????
         public int Salary { get; set; }
-
-        [NotMapped]
-        public Sex Sex { get; set; }
+        public Rarity Rarity { get; set; }
+        public Byte[] ImageBytes { get; set; }
         public int? CompanyId { get; set; } // внешний ключ
 
+    }
+
+
+    public enum Rarity
+    {
+        Legendary,
+        Epic,
+        Rare,
+        Normal
     }
 }

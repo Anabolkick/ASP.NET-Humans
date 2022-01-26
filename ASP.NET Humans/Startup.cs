@@ -1,6 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using ASP.NET_Humans.Domain;
 using ASP.NET_Humans.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Routing;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -60,11 +57,11 @@ namespace ASP.NET_Humans
                 var role = new IdentityRole("Admin");
                 Task.Run(() => roleManager.CreateAsync(role)).Wait();
 
+                //Create admin
                 var user = new User { UserName = "Admin", Email = "oleg10galysh@gmail.com", EmailConfirmed = true };
                 string pass = "Anab@1kick";
 
                 Task.Run(() => userManager.CreateAsync(user, pass)).Wait();
-
                 if (userManager.CreateAsync(user, pass).Result.Succeeded)
                 {
                     Task.Run(() => userManager.AddToRoleAsync(user, "Admin")).Wait();
@@ -121,7 +118,6 @@ namespace ASP.NET_Humans
             });
 
             CreateRoles(roleManager, userManager);
-            // DeleteRole(roleManager);
         }
     }
 }

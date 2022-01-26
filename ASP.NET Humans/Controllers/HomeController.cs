@@ -1,20 +1,22 @@
-﻿using ASP.NET_Humans.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+using System.Xml.Serialization;
+using ASP.NET_Humans.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-using Microsoft.ML;
-using Microsoft.ML.Data;
-using RandomNameGen;
+using Newtonsoft.Json;
 
 namespace ASP.NET_Humans.Controllers
 {
@@ -39,14 +41,37 @@ namespace ASP.NET_Humans.Controllers
 
         }
 
-        
-      //  [Authorize]
-        public IActionResult GetPeople(string login)
+        // [Authorize]
+        public async Task<IActionResult> GetPeople(string login)
         {
             if (User.Identity.IsAuthenticated)
             {
-                var workers = Generators.GenerateWorkersWithPhoto(4, login);
-                return View(workers);
+                IEnumerable < Worker> workers;
+                User user = userManager.FindByNameAsync(login).Result;
+                ViewBag.User = user;
+                using (var httpClient = new HttpClient())
+                {
+                    HttpResponseMessage response = await httpClient.GetAsync(" https://localhost:44320/api/Worker/4");
+                    response.EnsureSuccessStatusCode();
+                    var result = await response.Content.ReadFromJsonAsync(typeof(IEnumerable<Worker>));
+                    workers = (IEnumerable<Worker>)result;
+                }
+  
+                var  workersList = workers.ToList();
+
+                foreach (var worker in workersList)
+                {
+                    //Save Image                         
+                    var path = $"wwwroot/Images/Users/{user.Id}";
+                     Directory.CreateDirectory(path);
+
+                    MemoryStream ms = new MemoryStream(worker.ImageBytes, 0, worker.ImageBytes.Length);
+                    ms.Write(worker.ImageBytes, 0, worker.ImageBytes.Length);
+                    var image = Image.FromStream(ms, true);
+                    image.Save($"{path}/{worker.Id}.jpg");
+                }
+         
+                return View(workersList);
             }
             else
             {
@@ -80,17 +105,16 @@ namespace ASP.NET_Humans.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult GetPerson(string name, int age, int salary, Sex sex)
-        {
-            Worker worker = new Worker();
-            worker.Name = name;
-            worker.Age = age;
-            worker.Salary = salary;
-            worker.Sex = sex;
+       // [HttpPost]
+        //public IActionResult GetPerson(string name, int age, int salary, Sex sex)
+        //{
+        //    Worker worker = new Worker();
+        //    worker.Name = name;
+        //    worker.Age = age;
+        //    worker.Salary = salary;
+        //    worker.Sex = sex;
 
-            return View(worker);
-        }
+        //    return View(worker);
+        //}
     }
-
 }

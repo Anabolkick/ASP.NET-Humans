@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<Worker>;
 @{
     ViewData["Title"] = "Get People Page";
-
 }
 
 <div class="text-center">
@@ -15,11 +14,7 @@
                     </tr>
 
                     <tr>
-                        <td>Sex</td>
-                    </tr>
-
-                    <tr>
-                        <td>Age</td>
+                        <td>Rarity</td>
                     </tr>
                     <tr>
                         <td>Salary</td>
@@ -39,11 +34,7 @@
                         </tr>
 
                         <tr>
-                            <td>@mod.Sex</td>
-                        </tr>
-
-                        <tr>
-                            <td>@mod.Age</td>
+                            <td>@mod.Rarity</td>
                         </tr>
 
                         <tr>
@@ -51,19 +42,23 @@
                         </tr>
 
                         <tr>
-
-                            @{
-                                var path = ($"/Images/{Context.User.Identity.Name}/" + mod.Sex.ToString().ToLower() + "_" + mod.Name + ".jpg");
-                            }
-                            <td><img src="@path" alt="Can`t load image :D" width="200" height="200"></td>
+                            <td>
+                                @{
+                                    var user = (User)ViewBag.User;
+                                    var scr = @$"/Images/{user.Id}/{mod.Id}.jpg" ;
+                                    <img src="@scr" alt="Can`t load image :D" width="100" height="100">
+                                }
+                            </td>
                         </tr>
 
                         <tr>
-                            <form method="post">
-                            <td> <button asp-controller="Home" asp-action="GetPerson" , asp-route-name="@mod.Name" asp-route-age="@mod.Age" asp-route-salary="@mod.Salary" asp-route-sex="@mod.Sex"> Select</button> </td>
+                            <form method="post">  
+                                @{
+                                    <td> <button asp-controller="Home" asp-action="Index"> Image </button> </td> 
+                                }
                             </form>
 
-                        </tr>
+                            </tr>
 
                     </table>
                 </td>
