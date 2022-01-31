@@ -9,14 +9,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ASP_NET_Humans;
-using Microsoft.Extensions.Configuration;
 using PersonGeneratorApi.Models;
 
 namespace PersonGeneratorApi
 {
     public static class PersonGenerator
     {
-        private static IConfiguration configuration;
 
         private const string IdentPath = "Images\\Identified\\";
         private const string UnidentPath = "Images\\Unidentified\\";
@@ -133,31 +131,33 @@ namespace PersonGeneratorApi
                 Task.Run(() => SaveIdentifyImages(4));
             } while (firstFileName == null);
 
-            var bytes = File.ReadAllBytes(IdentPath + firstFileName);
 
-            using (MemoryStream ms = new MemoryStream(bytes, 0, bytes.Length))
+            //resize image
+            if (File.Exists(IdentPath + firstFileName))          //still 'The process cannot access the file 
             {
-                using (Image img = Image.FromStream(ms))
-                {
-                    int h = 200;
-                    int w = 200;
+                var bytes = File.ReadAllBytes(IdentPath + firstFileName);
+                File.Delete(IdentPath + firstFileName);
 
-                    using (Bitmap b = new Bitmap(img, new Size(w, h)))
+                using (MemoryStream ms = new MemoryStream(bytes, 0, bytes.Length))
+                {
+                    using (Image img = Image.FromStream(ms))
                     {
-                        using (MemoryStream ms2 = new MemoryStream())
+                        int h = 200;
+                        int w = 200;
+
+                        using (Bitmap b = new Bitmap(img, new Size(w, h)))
                         {
-                            b.Save(ms2, System.Drawing.Imaging.ImageFormat.Jpeg);
-                            bytes = ms2.ToArray();
+                            using (MemoryStream ms2 = new MemoryStream())
+                            {
+                                b.Save(ms2, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                bytes = ms2.ToArray();
+                            }
                         }
                     }
                 }
+
+                worker.ImageBytes = bytes;
             }
-
-            worker.ImageBytes = bytes;
-
-            File.Delete(IdentPath+firstFileName);
-            //var newPath = @"Images\" + worker.Id + ".jpg";
-            //File.Move(@"Images\Identified\" + firstFileName, newPath);
 
             //Download more if there's not enough photos left
             if (di.GetFiles().Length < 12)

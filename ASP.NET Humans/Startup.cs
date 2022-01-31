@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,13 +17,12 @@ namespace ASP.NET_Humans
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public Startup(IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true)
                 .AddEnvironmentVariables();
-
 
             Configuration = builder.Build();
         }
@@ -75,6 +75,10 @@ namespace ASP.NET_Humans
             }
         }
 
+        private void FoldersCreate()
+        {
+            Directory.CreateDirectory("wwwroot/Images/Users");
+        }
         private void DeleteRole(RoleManager<IdentityRole> roleManager)
         {
             var role = roleManager.FindByNameAsync("User").Result;
@@ -84,7 +88,6 @@ namespace ASP.NET_Humans
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
         {
-            var routeBuilder = new RouteBuilder(app);
 
             if (env.IsDevelopment())
             {
@@ -95,6 +98,7 @@ namespace ASP.NET_Humans
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
             app.UseAuthentication();
             app.UseStaticFiles();
             app.UseRouting();
@@ -118,6 +122,7 @@ namespace ASP.NET_Humans
             });
 
             CreateRoles(roleManager, userManager);
+            FoldersCreate();
         }
     }
 }

@@ -51,7 +51,7 @@ namespace ASP.NET_Humans.Controllers
                 ViewBag.User = user;
                 using (var httpClient = new HttpClient())
                 {
-                    HttpResponseMessage response = await httpClient.GetAsync(" https://localhost:44320/api/Worker/4");
+                    HttpResponseMessage response = await httpClient.GetAsync(" https://localhost:44320/Worker/4");
                     response.EnsureSuccessStatusCode();
                     var result = await response.Content.ReadFromJsonAsync(typeof(IEnumerable<Worker>));
                     workers = (IEnumerable<Worker>)result;

@@ -1,3 +1,4 @@
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,12 @@ namespace PersonGeneratorApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+        }
+
+        private void FoldersCreate()
+        {
+            Directory.CreateDirectory("Images/Identified");
+            Directory.CreateDirectory("Images/Unidentified");
         }
 
         public IConfiguration Configuration { get; }
@@ -45,6 +52,7 @@ namespace PersonGeneratorApi
             {
                 endpoints.MapControllers();
             });
+            FoldersCreate();
         }
     }
 }

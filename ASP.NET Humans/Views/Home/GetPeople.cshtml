@@ -5,7 +5,7 @@
 
 <div class="text-center">
 
-    <table>
+    <table  style="border-spacing: 7px 11px; border-collapse: separate; ">
         <tr>
             <td>
                 <table>
@@ -41,12 +41,33 @@
                             <td>@mod.Salary</td>
                         </tr>
 
-                        <tr>
-                            <td>
+                        <tr>   
+                            @{
+                                string color="";
+                                switch (@mod.Rarity)
+                                {
+                                    case Rarity.Legendary:
+                                        color = "orange";
+                                        break;
+                                    case Rarity.Epic:
+                                        color = "blueviolet";
+                                        break;
+                                    case Rarity.Rare:
+                                        color = "dodgerblue";
+                                        break;
+                                    case Rarity.Normal:
+                                        color = "grey";
+                                        break;
+                                    default:
+                                        color = "grey";
+                                        break;
+                                }
+                            }
+                            <td style="background: @color; width: 210px; height: 210px; ">
                                 @{
                                     var user = (User)ViewBag.User;
-                                    var scr = @$"/Images/{user.Id}/{mod.Id}.jpg" ;
-                                    <img src="@scr" alt="Can`t load image :D" width="100" height="100">
+                                    var scr = @$"/Images/Users/{user.Id}/{mod.Id}.jpg" ;
+                                    <img src="@scr" alt="Can`t load image :D" width="200" height="200">
                                 }
                             </td>
                         </tr>
