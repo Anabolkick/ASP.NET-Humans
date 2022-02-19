@@ -46,31 +46,38 @@ namespace ASP.NET_Humans.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                IEnumerable < Worker> workers;
+                List<Worker> workersList = new List<Worker>();
                 User user = userManager.FindByNameAsync(login).Result;
                 ViewBag.User = user;
-                using (var httpClient = new HttpClient())
+
+
+                IEnumerable<Worker> workers;
+                await Task.Run(() =>
                 {
-                    HttpResponseMessage response = await httpClient.GetAsync(" https://localhost:44320/Worker/4");
+                    using var httpClient = new HttpClient();
+                    HttpResponseMessage response = httpClient.GetAsync("https://localhost:44320/Worker/4").Result;
                     response.EnsureSuccessStatusCode();
-                    var result = await response.Content.ReadFromJsonAsync(typeof(IEnumerable<Worker>));
+                    var result = response.Content.ReadFromJsonAsync(typeof(IEnumerable<Worker>)).Result;
                     workers = (IEnumerable<Worker>)result;
-                }
-  
-                var  workersList = workers.ToList();
 
-                foreach (var worker in workersList)
+                    workersList = workers.ToList();
+                });
+
+                await Task.Run(() =>
                 {
-                    //Save Image                         
-                    var path = $"wwwroot/Images/Users/{user.Id}";
-                     Directory.CreateDirectory(path);
+                    foreach (var worker in workersList)
+                    {
+                        //Save Image                         
+                        var path = $"wwwroot/Images/Users/{user.Id}";
+                        Directory.CreateDirectory(path);
 
-                    MemoryStream ms = new MemoryStream(worker.ImageBytes, 0, worker.ImageBytes.Length);
-                    ms.Write(worker.ImageBytes, 0, worker.ImageBytes.Length);
-                    var image = Image.FromStream(ms, true);
-                    image.Save($"{path}/{worker.Id}.jpg");
-                }
-         
+                        MemoryStream ms = new MemoryStream(worker.ImageBytes, 0, worker.ImageBytes.Length);
+                        ms.Write(worker.ImageBytes, 0, worker.ImageBytes.Length);
+                        var image = Image.FromStream(ms, true);
+                        image.Save($"{path}/{worker.Id}.jpg");
+                    }
+                });
+
                 return View(workersList);
             }
             else
@@ -81,8 +88,6 @@ namespace ASP.NET_Humans.Controllers
 
         public IActionResult Index()
         {
-            // Generators.SavePhotosAsync(1);
-
             var temp = (Name, Developer);
             return View(temp);
         }
@@ -99,13 +104,13 @@ namespace ASP.NET_Humans.Controllers
             res += "\n request \n";
             return res;
         }
-    
+
         public IActionResult Privacy()
         {
             return View();
         }
 
-       // [HttpPost]
+        // [HttpPost]
         //public IActionResult GetPerson(string name, int age, int salary, Sex sex)
         //{
         //    Worker worker = new Worker();

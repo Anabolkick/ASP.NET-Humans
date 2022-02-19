@@ -15,15 +15,15 @@ namespace PersonGeneratorApi.Controllers
     {
 
         [HttpGet("rarity/{rarity}")]
-        public ActionResult<Worker> Get(Rarity rarity)
+        public async Task<ActionResult<Worker>> Get(Rarity rarity)
         {
-            var worker = PersonGenerator.GenerateWorker(rarity);
+            var worker = await PersonGenerator.GenerateWorkerAsync(rarity);
             return worker;
         }
 
 
         [HttpGet("{count}")]
-        public IEnumerable<Worker> Get(int count)
+        public async Task<IEnumerable<Worker>> Get(int count)
         {
             Random rand = new Random();
             List<Worker> workers = new List<Worker>();
@@ -32,7 +32,7 @@ namespace PersonGeneratorApi.Controllers
             for (int i = 0; i < count; i++)
             {
                 Rarity rarity = (Rarity)rand.Next(enumCount);
-                workers.Add(PersonGenerator.GenerateWorker(rarity));
+                workers.Add(await PersonGenerator.GenerateWorkerAsync(rarity));
             }
 
             return workers;

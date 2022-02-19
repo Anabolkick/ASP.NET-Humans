@@ -3,11 +3,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-*/wwwroot/Images/Checked/*.jpg
-*/wwwroot/Images/Unchecked/*.jpg
-*/Images/Identified/*.jpg
-*/Images/Unidentified/*.jpg
-*/Images/Users/*.jpg
+*/wwwroot/Images/Checked/*
+*/wwwroot/Images/Unchecked/*
+*/Images/Identified/*
+*/Images/Unidentified/*
+*/Images/Users/*
 !Images/Used
 
 
@@ -368,8 +368,5 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-# Fody - auto-generated XML schema
-FodyWeavers.xsd
-/ASP.NET Humans/wwwroot/Images/Checked/female_2133622358_3.jpg
-/PersonGeneratorApi/Images/Unidentified
+
 /ASP.NET Humans/wwwroot/Images/Users/f0b7e395-0bca-4e12-89bb-ce72eee15503
