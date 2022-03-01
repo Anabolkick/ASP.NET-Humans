@@ -7,6 +7,6 @@ namespace ASP.NET_Humans.Models
 {
     public class User : IdentityUser
     {
-        public IEnumerable<Worker> Workers { get; private set; }
+        public IEnumerable<Worker> Workers { get; set; }
     }
 }

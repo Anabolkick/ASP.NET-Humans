@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers.Text;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using ASP.NET_Humans.Domain;
 using ASP.NET_Humans.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -30,42 +32,52 @@ namespace ASP.NET_Humans.Controllers
 
         private RoleManager<IdentityRole> roleManager;
         private UserManager<User> userManager;
+        private AppDbContext DBcontext;
 
-        public HomeController(ILogger<HomeController> logger, IOptions<AnabolkickCompany> AnabComp, RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
+        public HomeController(ILogger<HomeController> logger, IOptions<AnabolkickCompany> AnabComp, RoleManager<IdentityRole> roleManager, UserManager<User> userManager, AppDbContext context)
         {
             _logger = logger;
             Name = AnabComp.Value.Name;
             Developer = AnabComp.Value.Developer;
             this.roleManager = roleManager;
             this.userManager = userManager;
+            DBcontext = context;
 
         }
 
-        // [Authorize]
         public async Task<IActionResult> GetPeople(string login)
         {
             if (User.Identity.IsAuthenticated)
             {
-                List<Worker> workersList = new List<Worker>();
                 User user = userManager.FindByNameAsync(login).Result;
+                List <Worker> workers;
                 ViewBag.User = user;
 
+                workers = DBcontext.Workers.Where(w => w.UserId == user.Id && w.IsHired == false).ToList();
 
-                IEnumerable<Worker> workers;
+                if (workers.Count() == 4)
+                {
+                    return View(workers);
+                }
+                if (workers.Count() > 4)
+                {
+                    Debug.WriteLine("Error!!! Worker count >4");
+                }
+
+                workers = new List<Worker>();
+
                 await Task.Run(() =>
                 {
                     using var httpClient = new HttpClient();
                     HttpResponseMessage response = httpClient.GetAsync("https://localhost:44320/Worker/4").Result;
                     response.EnsureSuccessStatusCode();
                     var result = response.Content.ReadFromJsonAsync(typeof(IEnumerable<Worker>)).Result;
-                    workers = (IEnumerable<Worker>)result;
-
-                    workersList = workers.ToList();
+                    workers = (List<Worker>)result;
                 });
 
                 await Task.Run(() =>
                 {
-                    foreach (var worker in workersList)
+                    foreach (var worker in workers)
                     {
                         //Save Image                         
                         var path = $"wwwroot/Images/Users/{user.Id}";
@@ -78,7 +90,15 @@ namespace ASP.NET_Humans.Controllers
                     }
                 });
 
-                return View(workersList);
+                foreach (var worker in workers)
+                {
+                    worker.IsHired = false;
+                    worker.UserId = user.Id;
+                    DBcontext.Workers.Add(worker);
+                }
+
+                DBcontext.SaveChanges();
+                return View(workers);
             }
             else
             {

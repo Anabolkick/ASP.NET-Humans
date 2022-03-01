@@ -136,11 +136,6 @@ namespace PersonGeneratorApi
 
             return worker;
         }
-
-        //private static async Task FoundImageToWorkerAsync(Worker worker)
-        //{
-        //    await Task.Run(() => FoundImageToWorker(worker));
-        //}
         private static async Task FoundImageToWorkerAsync(Worker worker)
         {
             DirectoryInfo di = new DirectoryInfo(IdentPath);

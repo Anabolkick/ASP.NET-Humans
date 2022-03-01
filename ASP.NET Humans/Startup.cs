@@ -61,7 +61,6 @@ namespace ASP.NET_Humans
                 var user = new User { UserName = "Admin", Email = "oleg10galysh@gmail.com", EmailConfirmed = true };
                 string pass = "Anab@1kick";
 
-                Task.Run(() => userManager.CreateAsync(user, pass)).Wait();
                 if (userManager.CreateAsync(user, pass).Result.Succeeded)
                 {
                     Task.Run(() => userManager.AddToRoleAsync(user, "Admin")).Wait();

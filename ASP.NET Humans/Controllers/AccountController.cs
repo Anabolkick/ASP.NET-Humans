@@ -54,10 +54,16 @@ namespace ASP.NET_Humans.Controllers
                         },
                         protocol: HttpContext.Request.Scheme);
 
-                    SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
-                    client.Credentials = new System.Net.NetworkCredential("oleg10galysh@gmail.com", "kkronbmduhpvrach");
+                    using SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
+                    client.Credentials = new System.Net.NetworkCredential("peopletwo98@gmail.com", "cs18g1d9");
                     client.EnableSsl = true;
-                    client.Send("oleg10galysh@gmail.com", user.Email, "Confirm your email", confirmationLink);
+
+                    MailMessage message = new MailMessage("peopletwo98@gmail.com", user.Email);
+                    message.IsBodyHtml = true;
+                    message.Body = $"Confirmation link: <a href =\"{confirmationLink}\">Link</a>";
+                    message.Subject = "Confirm your email";
+
+                    client.Send(message);
 
 
                     return RedirectToAction("Index", "Home");

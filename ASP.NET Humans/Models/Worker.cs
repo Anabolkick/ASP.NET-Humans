@@ -10,10 +10,12 @@ namespace ASP.NET_Humans.Models
         public int Salary { get; set; }
         public Rarity Rarity { get; set; }
         public Byte[] ImageBytes { get; set; }
-        public int? CompanyId { get; set; } // внешний ключ
+        public bool IsHired { get; set; }
+        public User User { get; set; }  // нав свойство
+        public string UserId { get; set; }  // внешний ключ
+      
 
     }
-
 
     public enum Rarity
     {
