@@ -57,13 +57,15 @@ namespace ASP.NET_Humans
                 var role = new IdentityRole("Admin");
                 Task.Run(() => roleManager.CreateAsync(role)).Wait();
 
-                //Create admin
-                var user = new User { UserName = "Admin", Email = "oleg10galysh@gmail.com", EmailConfirmed = true };
+                //Create admins
+                var admin = new User { UserName = "Admin", Email = "oleg10galysh@gmail.com", EmailConfirmed = true, Id = "admin"};
+                var system = new User { UserName = "System", Email = "oleg.10galysh@gmail.com", EmailConfirmed = true, Id = "system"};
                 string pass = "Anab@1kick";
 
-                if (userManager.CreateAsync(user, pass).Result.Succeeded)
+                if (userManager.CreateAsync(admin, pass).Result.Succeeded && userManager.CreateAsync(system, pass).Result.Succeeded)
                 {
-                    Task.Run(() => userManager.AddToRoleAsync(user, "Admin")).Wait();
+                    Task.Run(() => userManager.AddToRoleAsync(admin, "Admin")).Wait();
+                    Task.Run(() => userManager.AddToRoleAsync(system, "Admin")).Wait();
                 }
             }
 

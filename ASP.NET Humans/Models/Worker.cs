@@ -9,6 +9,7 @@ namespace ASP.NET_Humans.Models
         public string Name { get; set; }
         public int Salary { get; set; }
         public Rarity Rarity { get; set; }
+        [NotMapped]
         public Byte[] ImageBytes { get; set; }
         public bool IsHired { get; set; }
         public User User { get; set; }  // нав свойство

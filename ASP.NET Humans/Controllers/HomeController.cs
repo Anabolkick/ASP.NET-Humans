@@ -47,63 +47,117 @@ namespace ASP.NET_Humans.Controllers
 
         public async Task<IActionResult> GetPeople(string login)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                User user = userManager.FindByNameAsync(login).Result;
-                List <Worker> workers;
-                ViewBag.User = user;
 
-                workers = DBcontext.Workers.Where(w => w.UserId == user.Id && w.IsHired == false).ToList();
-
-                if (workers.Count() == 4)
-                {
-                    return View(workers);
-                }
-                if (workers.Count() > 4)
-                {
-                    Debug.WriteLine("Error!!! Worker count >4");
-                }
-
-                workers = new List<Worker>();
-
-                await Task.Run(() =>
-                {
-                    using var httpClient = new HttpClient();
-                    HttpResponseMessage response = httpClient.GetAsync("https://localhost:44320/Worker/4").Result;
-                    response.EnsureSuccessStatusCode();
-                    var result = response.Content.ReadFromJsonAsync(typeof(IEnumerable<Worker>)).Result;
-                    workers = (List<Worker>)result;
-                });
-
-                await Task.Run(() =>
-                {
-                    foreach (var worker in workers)
-                    {
-                        //Save Image                         
-                        var path = $"wwwroot/Images/Users/{user.Id}";
-                        Directory.CreateDirectory(path);
-
-                        MemoryStream ms = new MemoryStream(worker.ImageBytes, 0, worker.ImageBytes.Length);
-                        ms.Write(worker.ImageBytes, 0, worker.ImageBytes.Length);
-                        var image = Image.FromStream(ms, true);
-                        image.Save($"{path}/{worker.Id}.jpg");
-                    }
-                });
-
-                foreach (var worker in workers)
-                {
-                    worker.IsHired = false;
-                    worker.UserId = user.Id;
-                    DBcontext.Workers.Add(worker);
-                }
-
-                DBcontext.SaveChanges();
-                return View(workers);
-            }
-            else
+            if (User.Identity is { IsAuthenticated: false })
             {
                 return Redirect("~/Account/Login/");
             }
+
+            if (login == null)   //todo проверку при проходе запроса
+            {
+                return Redirect("~/Home/");
+            }
+
+            User user = userManager.FindByNameAsync(login).Result;
+            ViewBag.User = user;
+
+            List<Worker> workers;
+            List<string> workers_id = new List<string>();
+
+            workers = DBcontext.Workers.Where(w => w.UserId == user.Id && w.IsHired == false).ToList();
+
+            if (workers.Count() == 4)
+            {
+                foreach (var worker in workers)
+                {
+                    workers_id.Add(worker.Id.ToString());
+                }
+                TempData["Workers"] = workers_id;
+                return View(workers);
+            }
+
+            // если больше 4, то отдавать системе, пока не будет 4
+            if (workers.Count() > 4)
+            {
+                while (workers.Count > 4)
+                {
+                    var dbWorker = DBcontext.Workers.FirstOrDefault(w => w.Id.ToString() == workers[0].UserId);
+                    if (dbWorker != null)
+                    {
+                        dbWorker.UserId = "system";
+                    }
+                    workers.RemoveAt(0);
+                }
+
+                foreach (var worker in workers)
+                {
+                    workers_id.Add(worker.Id.ToString());
+                }
+
+                TempData["Workers"] = workers_id;
+                return View(workers);
+            }
+
+            // если их нет, то сгенерировать новых
+            workers = new List<Worker>();
+            workers_id = new List<string>();
+
+            await Task.Run(() =>
+            {
+                using var httpClient = new HttpClient();
+                HttpResponseMessage response = httpClient.GetAsync("https://localhost:44320/Worker/4").Result;
+                response.EnsureSuccessStatusCode();
+                var result = response.Content.ReadFromJsonAsync(typeof(IEnumerable<Worker>)).Result;
+                workers = (List<Worker>)result;
+            });
+            await Task.Run(() =>
+            {
+                foreach (var worker in workers)
+                {
+                    //Save Image                         
+                    var path = $"wwwroot/Images/Users/{user.Id}";
+                    Directory.CreateDirectory(path);
+
+                    MemoryStream ms = new MemoryStream(worker.ImageBytes, 0, worker.ImageBytes.Length);
+                    ms.Write(worker.ImageBytes, 0, worker.ImageBytes.Length);
+                    var image = Image.FromStream(ms, true);
+                    image.Save($"{path}/{worker.Id}.jpg");
+                }
+            });
+
+            foreach (var worker in workers)
+            {
+                worker.IsHired = false;
+                worker.UserId = user.Id;
+                DBcontext.Workers.Add(worker);
+                workers_id.Add(worker.Id.ToString());
+            }
+
+            await DBcontext.SaveChangesAsync();
+            TempData["Workers"] = workers_id;
+
+            return View(workers);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> RefreshPeople(string login)
+        {
+            var workers_id = TempData["Workers"] as IEnumerable<string>;
+            if (workers_id == null)
+            {
+                return BadRequest("Error!!!RefreshPeople Workers");
+            }
+            foreach (var id in workers_id)
+            {
+                var dbWorker = DBcontext.Workers.FirstOrDefault(w => w.Id.ToString() == id);
+                if (dbWorker != null)
+                {
+                    dbWorker.UserId = "system";
+                }
+            }
+            await DBcontext.SaveChangesAsync();
+            return RedirectToAction("GetPeople", new { login = login });
         }
 
         public IActionResult Index()

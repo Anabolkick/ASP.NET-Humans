@@ -1,11 +1,11 @@
-﻿ @model IEnumerable<Worker>;
+﻿@using System.Collections
+@model IEnumerable<Worker>;
 @{
     ViewData["Title"] = "Get People Page";
 }
 
 <div class="text-center">
-
-    <table  style="border-spacing: 7px 11px; border-collapse: separate; ">
+    <table style="border-spacing: 7px 11px; border-collapse: separate; ">
         <tr>
             <td>
                 <table>
@@ -41,9 +41,9 @@
                             <td>@mod.Salary</td>
                         </tr>
 
-                        <tr>   
+                        <tr>
                             @{
-                                string color="";
+                                string color = "";
                                 switch (@mod.Rarity)
                                 {
                                     case Rarity.Legendary:
@@ -66,24 +66,26 @@
                             <td style="background: @color; width: 210px; height: 210px; ">
                                 @{
                                     var user = (User)ViewBag.User;
-                                    var scr = @$"/Images/Users/{user.Id}/{mod.Id}.jpg" ;
+                                    var scr = @$"/Images/Users/{user.Id}/{mod.Id}.jpg";
                                     <img src="@scr" alt="Can`t load image :D" width="200" height="200">
                                 }
                             </td>
                         </tr>
 
                         <tr>
-                            <form method="post">  
-                                @{
-                                    <td> <button asp-controller="Home" asp-action="Index"> Image </button> </td> 
-                                }
+                            <form method="post">
+                                <td> <button asp-controller="Home" asp-action="Index"> Image </button> </td>
                             </form>
 
                             </tr>
 
-                    </table>
-                </td>
-            }
+                        </table>
+                    </td>
+                }
         </tr>
     </table>
+    <br />
 </div>
+<form method="post">
+    <button asp-controller="Home" asp-action="RefreshPeople" asp-route-login="@Context.User.Identity.Name">Refresh</button>
+</form>
