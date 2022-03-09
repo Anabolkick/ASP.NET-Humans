@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
+﻿using System.Net.Mail;
 using System.Threading.Tasks;
 using ASP.NET_Humans.Models;
 using ASP.NET_Humans.ViewModels;
@@ -35,7 +31,7 @@ namespace ASP.NET_Humans.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User { Email = model.Email, UserName = model.Name};
+                User user = new User { Email = model.Email, UserName = model.Name };
                 // добавляем пользователя
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
@@ -48,10 +44,10 @@ namespace ASP.NET_Humans.Controllers
                     string confirmationToken = userManager.GenerateEmailConfirmationTokenAsync(user).Result;
 
                     string confirmationLink = Url.Action("ConfirmEmail", "Account", new
-                        {
-                            userid = user.Id,
-                            token = confirmationToken
-                        },
+                    {
+                        userid = user.Id,
+                        token = confirmationToken
+                    },
                         protocol: HttpContext.Request.Scheme);
 
                     using SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
@@ -109,7 +105,7 @@ namespace ASP.NET_Humans.Controllers
                 var user = await userManager.FindByNameAsync(model.Email_Login.ToUpper()) ?? await userManager.FindByEmailAsync(model.Email_Login.ToUpper());
                 SignInResult result;
                 if (user != null)
-                { 
+                {
                     result = await signInManager.PasswordSignInAsync(user.UserName, model.Password, model.IsRemember, false);
                 }
                 else

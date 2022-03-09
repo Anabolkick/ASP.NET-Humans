@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ASP.NET_Humans.Models;
 using ASP.NET_Humans.ViewModels;
@@ -29,7 +27,6 @@ namespace ASP.NET_Humans.Controllers
             //   assa.LockoutEnd = DateTimeOffset.Now + TimeSpan.FromDays(10);
             //   Task.Run(() => userManager.UpdateAsync(assa)).Wait();
             return View(users);
-
         }
 
         public IActionResult EditUser(string id)
@@ -37,7 +34,7 @@ namespace ASP.NET_Humans.Controllers
             var user = userManager.FindByIdAsync(id).Result;
             var allRoles = roleManager.Roles.ToList();
             var userRoles = userManager.GetRolesAsync(user).Result.ToList();
-            EditUserViewModel editUser = new EditUserViewModel(){Email = user.Email, EmailConfirmed = user.EmailConfirmed, Id = user.Id, Login = user.UserName,Roles = userRoles, AllRoles = allRoles};
+            EditUserViewModel editUser = new EditUserViewModel() { Email = user.Email, EmailConfirmed = user.EmailConfirmed, Id = user.Id, Login = user.UserName, Roles = userRoles, AllRoles = allRoles };
             return View(editUser);
         }
 
@@ -62,7 +59,7 @@ namespace ASP.NET_Humans.Controllers
 
             if (result.Succeeded)
             {
-               return RedirectToAction("UsersList");
+                return RedirectToAction("UsersList");
             }
             else
             {

@@ -1,30 +1,23 @@
 ﻿using System;
-using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 using ASP.NET_Humans.Domain;
 using ASP.NET_Humans.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 
 namespace ASP.NET_Humans.Controllers
 {
     public class HomeController : Controller
     {
-  
+
         public string Developer { get; }
         public string Name { get; }
 
@@ -167,7 +160,7 @@ namespace ASP.NET_Humans.Controllers
 
         [HttpPost]
         public async Task<IActionResult> RefreshSystemPeople()
-        {   
+        {
             //Проверка, есть ли в системе минимум 4 рабочих
             var sysCount = DBcontext.Workers.Count(w => w.UserId == "system");
             if (sysCount < 4)

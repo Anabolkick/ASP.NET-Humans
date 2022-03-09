@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PersonGeneratorApi.Models;
 
 namespace PersonGeneratorApi.Controllers
 {
-
     [ApiController]
     [Route("[controller]")]
- //   [Route("api/")]
     public class WorkerController : ControllerBase
     {
 

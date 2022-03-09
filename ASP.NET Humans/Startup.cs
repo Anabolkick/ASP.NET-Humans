@@ -10,8 +10,6 @@ using ASP.NET_Humans.Domain;
 using ASP.NET_Humans.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Routing;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace ASP.NET_Humans
 {
