@@ -87,5 +87,6 @@
     <br />
 </div>
 <form method="post">
-    <button asp-controller="Home" asp-action="RefreshPeople" asp-route-login="@Context.User.Identity.Name">Refresh</button>
+    <button asp-controller="Home" asp-action="RefreshNewPeople">Refresh New</button>  
+    <button asp-controller="Home" asp-action="RefreshSystemPeople">Refresh System</button>
 </form>

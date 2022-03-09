@@ -24,8 +24,7 @@ namespace ASP.NET_Humans.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
+  
         public string Developer { get; }
         public string Name { get; }
 
@@ -34,9 +33,8 @@ namespace ASP.NET_Humans.Controllers
         private UserManager<User> userManager;
         private AppDbContext DBcontext;
 
-        public HomeController(ILogger<HomeController> logger, IOptions<AnabolkickCompany> AnabComp, RoleManager<IdentityRole> roleManager, UserManager<User> userManager, AppDbContext context)
+        public HomeController(IOptions<AnabolkickCompany> AnabComp, RoleManager<IdentityRole> roleManager, UserManager<User> userManager, AppDbContext context)
         {
-            _logger = logger;
             Name = AnabComp.Value.Name;
             Developer = AnabComp.Value.Developer;
             this.roleManager = roleManager;
@@ -45,8 +43,9 @@ namespace ASP.NET_Humans.Controllers
 
         }
 
-        public async Task<IActionResult> GetPeople(string login)
+        public async Task<IActionResult> GetPeople()
         {
+            var login = User.Identity.Name;
 
             if (User.Identity is { IsAuthenticated: false })
             {
@@ -66,6 +65,7 @@ namespace ASP.NET_Humans.Controllers
 
             workers = DBcontext.Workers.Where(w => w.UserId == user.Id && w.IsHired == false).ToList();
 
+            //если в системе есть 4, то выводит их
             if (workers.Count() == 4)
             {
                 foreach (var worker in workers)
@@ -141,14 +141,17 @@ namespace ASP.NET_Humans.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> RefreshPeople(string login)
+        public async Task<IActionResult> RefreshNewPeople()
         {
-            var workers_id = TempData["Workers"] as IEnumerable<string>;
-            if (workers_id == null)
+            var login = User.Identity.Name;
+
+            //return old workers to system
+            var old_workers_id = TempData["Workers"] as IEnumerable<string>;
+            if (old_workers_id == null)
             {
-                return BadRequest("Error!!!RefreshPeople Workers");
+                return BadRequest("Error! Can`t update workers. Please, refresh the page.");
             }
-            foreach (var id in workers_id)
+            foreach (var id in old_workers_id)
             {
                 var dbWorker = DBcontext.Workers.FirstOrDefault(w => w.Id.ToString() == id);
                 if (dbWorker != null)
@@ -157,7 +160,69 @@ namespace ASP.NET_Humans.Controllers
                 }
             }
             await DBcontext.SaveChangesAsync();
-            return RedirectToAction("GetPeople", new { login = login });
+
+            return RedirectToAction("GetPeople");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> RefreshSystemPeople()
+        {   
+            //Проверка, есть ли в системе минимум 4 рабочих
+            var sysCount = DBcontext.Workers.Count(w => w.UserId == "system");
+            if (sysCount < 4)
+            {
+                return BadRequest("Error! Count of system workers less then 4.");
+            }
+
+            //Сохраняет айди старых рабочих, которые потом будут перенесены в систему
+            var old_workers_id = TempData["Workers"] as IEnumerable<string>;
+            if (old_workers_id == null)
+            {
+                return BadRequest("Error! Can`t update workers. Please, refresh the page.");
+            }
+
+            //Достает случайных рабочих с системы
+            List<Worker> allWorkersList = DBcontext.Workers.Where(w => w.UserId == "system").ToList();
+            List<string> workers_id = new List<string>();
+
+            Random rand = new Random();
+            for (int i = 0; i < 4; i++)
+            {
+                var rand_num = rand.Next(0, allWorkersList.Count - 1);
+                workers_id.Add(allWorkersList[rand_num].Id.ToString());
+                allWorkersList.RemoveAt(rand_num);
+            }
+
+            var UserId = userManager.Users.FirstOrDefault(u => u.UserName == User.Identity.Name)?.Id;
+            if (UserId == null)
+            {
+                return BadRequest("Error! Re-login to your account, please!");
+            }
+
+            foreach (var id in workers_id)
+            {
+                var dbWorker = DBcontext.Workers.FirstOrDefault(w => w.Id.ToString() == id);
+                if (dbWorker != null)
+                {
+                    dbWorker.UserId = UserId;
+                    dbWorker.IsHired = false;
+                }
+            }
+
+            //Переносит старых рабочих в систему
+            foreach (var id in old_workers_id)
+            {
+                var dbWorker = DBcontext.Workers.FirstOrDefault(w => w.Id.ToString() == id);
+                if (dbWorker != null)
+                {
+                    dbWorker.UserId = "system";
+                }
+            }
+
+
+            await DBcontext.SaveChangesAsync();
+            return RedirectToAction("GetPeople");
         }
 
         public IActionResult Index()
