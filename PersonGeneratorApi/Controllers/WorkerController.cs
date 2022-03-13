@@ -10,7 +10,6 @@ namespace PersonGeneratorApi.Controllers
     [Route("[controller]")]
     public class WorkerController : ControllerBase
     {
-
         [HttpGet("rarity/{rarity}")]
         public async Task<ActionResult<Worker>> Get(Rarity rarity)
         {

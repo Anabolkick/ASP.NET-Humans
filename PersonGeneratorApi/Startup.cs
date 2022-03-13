@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using PersonGeneratorApi.Middleware;
 
 
 namespace PersonGeneratorApi
@@ -13,7 +12,9 @@ namespace PersonGeneratorApi
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            builder.AddConfiguration(configuration);
+            builder.AddJsonFile("appsettings.json", optional: true);
         }
 
         private void FoldersCreate()
@@ -22,36 +23,22 @@ namespace PersonGeneratorApi
             Directory.CreateDirectory("Images/Unidentified");
         }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PersonGeneratorApi", Version = "v1" });
-            });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-            }
-
-           // app.UseHttpsRedirection();
-
+            app.UseMiddleware<KeyValidationMiddleware>();
+            app.UseHttpsRedirection();
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
             FoldersCreate();
         }
     }

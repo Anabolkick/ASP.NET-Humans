@@ -89,18 +89,24 @@ namespace PersonGeneratorApi
             for (int i = 0; i < tmp_length; i++)
             {
                 var path = paths[i];
-
-                if (outputs[i].PredictedLabel == "male")
+                try
                 {
-                    File.Move(path, $"{IdentPath}male_{DateTime.Now:yyyy_MM_dd_HH_mm_ss}_{i}.jpg");
+                    if (outputs[i].PredictedLabel == "male")
+                    {
+                        File.Move(path, $"{IdentPath}male_{DateTime.Now:yyyy_MM_dd_HH_mm_ss.fff}_{i}.jpg");
+                    }
+                    else if (outputs[i].PredictedLabel == "female")
+                    {
+                        File.Move(path, $"{IdentPath}female_{DateTime.Now:yyyy_MM_dd_T_HH_mm_ss.fff}_{i}.jpg");
+                    }
+                    else
+                    {
+                        File.Delete(path);
+                    }
                 }
-                else if (outputs[i].PredictedLabel == "female")
+                catch (Exception e)
                 {
-                    File.Move(path, $"{IdentPath}female_{DateTime.Now:yyyy_MM_dd_T_HH_mm_ss}_{i}.jpg");
-                }
-                else
-                {
-                    File.Delete(path);
+                    Console.WriteLine(e);
                 }
             }
 
@@ -141,7 +147,7 @@ namespace PersonGeneratorApi
             DirectoryInfo di = new DirectoryInfo(IdentPath);
 
             string firstFileName;
-            newFile:
+        newFile:
             do
             {
                 firstFileName = di.GetFiles() //TODO null ref.
@@ -213,7 +219,7 @@ namespace PersonGeneratorApi
             //Download more if there's not enough photos left
             if (di.GetFiles().Length < 16)
             {
-                 SaveIdentifyAsync(24);
+                SaveIdentifyAsync(24);
             }
         }
 

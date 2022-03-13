@@ -31,8 +31,6 @@ namespace ASP.NET_Humans
         {
             services.AddControllersWithViews();
 
-            services.Configure<AnabolkickCompany>(Configuration.GetSection("AnabolkickCompany"));
-
             services.AddDbContext<AppDbContext>(x =>
                 x.UseSqlServer(Configuration.GetConnectionString("LocalDatabase")));
 
@@ -56,8 +54,8 @@ namespace ASP.NET_Humans
                 Task.Run(() => roleManager.CreateAsync(role)).Wait();
 
                 //Create admins
-                var admin = new User { UserName = "Admin", Email = "oleg10galysh@gmail.com", EmailConfirmed = true, Id = "admin"};
-                var system = new User { UserName = "System", Email = "oleg.10galysh@gmail.com", EmailConfirmed = true, Id = "system"};
+                var admin = new User { UserName = "Admin", Email = "oleg10galysh@gmail.com", EmailConfirmed = true, Id = "admin" };
+                var system = new User { UserName = "System", Email = "oleg.10galysh@gmail.com", EmailConfirmed = true, Id = "system" };
                 string pass = "Anab@1kick";
 
                 if (userManager.CreateAsync(admin, pass).Result.Succeeded && userManager.CreateAsync(system, pass).Result.Succeeded)
@@ -77,12 +75,6 @@ namespace ASP.NET_Humans
         private void FoldersCreate()
         {
             Directory.CreateDirectory("wwwroot/Images/Users");
-        }
-        private void DeleteRole(RoleManager<IdentityRole> roleManager)
-        {
-            var role = roleManager.FindByNameAsync("User").Result;
-            var result = roleManager.DeleteAsync(role);
-            Console.WriteLine(result.Result.Errors);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RoleManager<IdentityRole> roleManager, UserManager<User> userManager)

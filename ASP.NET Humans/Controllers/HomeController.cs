@@ -11,29 +11,24 @@ using ASP.NET_Humans.Domain;
 using ASP.NET_Humans.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ASP.NET_Humans.Controllers
 {
     public class HomeController : Controller
     {
-
-        public string Developer { get; }
-        public string Name { get; }
-
-
+        private readonly IConfiguration _configuration;
         private RoleManager<IdentityRole> roleManager;
         private UserManager<User> userManager;
         private AppDbContext DBcontext;
 
-        public HomeController(IOptions<AnabolkickCompany> AnabComp, RoleManager<IdentityRole> roleManager, UserManager<User> userManager, AppDbContext context)
+        public HomeController(IConfiguration configuration, RoleManager<IdentityRole> roleManager, UserManager<User> userManager, AppDbContext context)
         {
-            Name = AnabComp.Value.Name;
-            Developer = AnabComp.Value.Developer;
+            _configuration = configuration;
             this.roleManager = roleManager;
             this.userManager = userManager;
             DBcontext = context;
-
         }
 
         public async Task<IActionResult> GetPeople()
@@ -44,32 +39,29 @@ namespace ASP.NET_Humans.Controllers
             {
                 return Redirect("~/Account/Login/");
             }
-
-            if (login == null)   //todo проверку при проходе запроса
+            if (login == null)
             {
                 return Redirect("~/Home/");
             }
 
             User user = userManager.FindByNameAsync(login).Result;
             ViewBag.User = user;
+            List<string> workersId = new List<string>();
+            List<Worker> workers = DBcontext.Workers.Where(w => w.UserId == user.Id && w.IsHired == false).ToList();
 
-            List<Worker> workers;
-            List<string> workers_id = new List<string>();
-
-            workers = DBcontext.Workers.Where(w => w.UserId == user.Id && w.IsHired == false).ToList();
-
-            //если в системе есть 4, то выводит их
+            #region If workers == 4 --> show them
             if (workers.Count() == 4)
             {
                 foreach (var worker in workers)
                 {
-                    workers_id.Add(worker.Id.ToString());
+                    workersId.Add(worker.Id.ToString());
                 }
-                TempData["Workers"] = workers_id;
+                TempData["Workers"] = workersId;
                 return View(workers);
             }
+            #endregion
 
-            // если больше 4, то отдавать системе, пока не будет 4
+            #region If workers > 4 --> delete while != 4
             if (workers.Count() > 4)
             {
                 while (workers.Count > 4)
@@ -84,30 +76,65 @@ namespace ASP.NET_Humans.Controllers
 
                 foreach (var worker in workers)
                 {
-                    workers_id.Add(worker.Id.ToString());
+                    workersId.Add(worker.Id.ToString());
                 }
-
-                TempData["Workers"] = workers_id;
+                TempData["Workers"] = workersId;
                 return View(workers);
             }
+            #endregion
 
-            // если их нет, то сгенерировать новых
-            workers = new List<Worker>();
-            workers_id = new List<string>();
-
-            await Task.Run(() =>
+            #region If workers < 4 --> generate new
+            if (workers.Count < 4)
             {
-                using var httpClient = new HttpClient();
-                HttpResponseMessage response = httpClient.GetAsync("https://localhost:44320/Worker/4").Result;
-                response.EnsureSuccessStatusCode();
-                var result = response.Content.ReadFromJsonAsync(typeof(IEnumerable<Worker>)).Result;
-                workers = (List<Worker>)result;
-            });
+                workers = GenerateNewWorker(user).Result;
+                if (workers == null)
+                {
+                    return BadRequest($"Error while generate workers. Please, refresh the page and try again");
+                }
+            }
+            #endregion
+
+            foreach (var worker in workers)
+            {
+                worker.IsHired = false;
+                worker.UserId = user.Id;
+                DBcontext.Workers.Add(worker);
+                workersId.Add(worker.Id.ToString());
+            }
+
+            await DBcontext.SaveChangesAsync();
+            TempData["Workers"] = workersId;
+
+            return View(workers);
+        }
+
+        private async Task<List<Worker>> GenerateNewWorker(User user)
+        {
+            List<Worker> workers = new List<Worker>();
+            List<string> workersId = new List<string>();
+
+            try
+            {
+                await Task.Run(() =>
+                {
+                    using var httpClient = new HttpClient();
+                    httpClient.DefaultRequestHeaders.Add("AccessKey", _configuration["ApiAccessKey"]);
+                    HttpResponseMessage response = httpClient.GetAsync("https://localhost:44320/Worker/4").Result;
+                    response.EnsureSuccessStatusCode();
+                    var result = response.Content.ReadFromJsonAsync(typeof(IEnumerable<Worker>)).Result;
+                    workers = (List<Worker>)result;
+                });
+            }
+            catch
+            {
+                return null;
+            }
+
+            //Save image from bytes
             await Task.Run(() =>
             {
                 foreach (var worker in workers)
                 {
-                    //Save Image                         
                     var path = $"wwwroot/Images/Users/{user.Id}";
                     Directory.CreateDirectory(path);
 
@@ -118,18 +145,7 @@ namespace ASP.NET_Humans.Controllers
                 }
             });
 
-            foreach (var worker in workers)
-            {
-                worker.IsHired = false;
-                worker.UserId = user.Id;
-                DBcontext.Workers.Add(worker);
-                workers_id.Add(worker.Id.ToString());
-            }
-
-            await DBcontext.SaveChangesAsync();
-            TempData["Workers"] = workers_id;
-
-            return View(workers);
+            return workers;
         }
 
 
@@ -220,8 +236,7 @@ namespace ASP.NET_Humans.Controllers
 
         public IActionResult Index()
         {
-            var temp = (Name, Developer);
-            return View(temp);
+            return View();
         }
 
         public string Tutor()
