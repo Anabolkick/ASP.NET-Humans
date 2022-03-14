@@ -34,49 +34,18 @@ namespace ASP.NET_Humans
             services.AddDbContext<AppDbContext>(x =>
                 x.UseSqlServer(Configuration.GetConnectionString("LocalDatabase")));
 
-            services.AddIdentity<User, IdentityRole>(options =>
-                {
+            services.AddIdentity<User, IdentityRole>(options => 
+            {
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequiredUniqueChars = 2;
                     options.Password.RequireNonAlphanumeric = false;
                     options.User.RequireUniqueEmail = true;
-                })
+            })
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
-
         }
 
-        private void CreateRoles(RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
-        {
-            if (!roleManager.RoleExistsAsync("Admin").Result)
-            {
-                var role = new IdentityRole("Admin");
-                Task.Run(() => roleManager.CreateAsync(role)).Wait();
-
-                //Create admins
-                var admin = new User { UserName = "Admin", Email = "oleg10galysh@gmail.com", EmailConfirmed = true, Id = "admin" };
-                var system = new User { UserName = "System", Email = "oleg.10galysh@gmail.com", EmailConfirmed = true, Id = "system" };
-                string pass = "Anab@1kick";
-
-                if (userManager.CreateAsync(admin, pass).Result.Succeeded && userManager.CreateAsync(system, pass).Result.Succeeded)
-                {
-                    Task.Run(() => userManager.AddToRoleAsync(admin, "Admin")).Wait();
-                    Task.Run(() => userManager.AddToRoleAsync(system, "Admin")).Wait();
-                }
-            }
-
-            if (!roleManager.RoleExistsAsync("User").Result)
-            {
-                var role = new IdentityRole() { Name = "User" };
-                Task.Run(() => roleManager.CreateAsync(role)).Wait();
-            }
-        }
-
-        private void FoldersCreate()
-        {
-            Directory.CreateDirectory("wwwroot/Images/Users");
-        }
-
+        
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
         {
 
@@ -112,8 +81,7 @@ namespace ASP.NET_Humans
                     pattern: "{controller=Home}/{action=Index}/{id:int?}");
             });
 
-            CreateRoles(roleManager, userManager);
-            FoldersCreate();
+            InitialSetup.InitialSetupAsync(roleManager, userManager).Wait();
         }
     }
 }
