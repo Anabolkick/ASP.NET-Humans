@@ -10,19 +10,14 @@ namespace PersonGeneratorApi
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
         public Startup(IConfiguration configuration)
         {
             ConfigurationBuilder builder = new ConfigurationBuilder();
             builder.AddConfiguration(configuration);
             builder.AddJsonFile("appsettings.json", optional: true);
+            _configuration = configuration;
         }
-
-        private void FoldersCreate()
-        {
-            Directory.CreateDirectory("Images/Identified");
-            Directory.CreateDirectory("Images/Unidentified");
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
@@ -39,7 +34,14 @@ namespace PersonGeneratorApi
                 endpoints.MapControllers();
             });
 
-            FoldersCreate();
+            PersonGenerator.PersonGeneratorConfigure(_configuration);
+            CreateFolders();
+        }
+
+        private void CreateFolders()
+        {
+            Directory.CreateDirectory(_configuration["UnidentPath"]);
+            Directory.CreateDirectory(_configuration["IdentPath"]);
         }
     }
 }
