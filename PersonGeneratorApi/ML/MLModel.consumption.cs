@@ -48,7 +48,7 @@ namespace PersonGeneratorApi
 
         #endregion
 
-        private static string MLNetModelPath = Path.GetFullPath("ML/MLModel.zip");
+        private static string MLNetModelPath = Path.GetFullPath("ML/GenderModel.zip");
 
         public static readonly Lazy<PredictionEngine<ModelInput, ModelOutput>> PredictEngine = new Lazy<PredictionEngine<ModelInput, ModelOutput>>(() => CreatePredictEngine(), true);
 
