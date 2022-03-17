@@ -16,10 +16,10 @@ namespace PersonGeneratorApi
 {
     public static class PersonGenerator
     {
-        private static readonly object SaveLocker = new object();
+        private static readonly object _saveLocker = new object();
+        private static readonly object _identLocker = new object();
         private static string _identPath;
         private static string _unidentPath;
-
 
         public static void PersonGeneratorConfigure(IConfiguration configuration)
         {
@@ -67,7 +67,7 @@ namespace PersonGeneratorApi
         private static async Task ImageToWorkerAsync(Worker worker)
         {
             DirectoryInfo dir = new DirectoryInfo(_identPath);
-
+            int i = 0; //i -  iteration
             string firstFileName;
             do
             {
@@ -77,9 +77,17 @@ namespace PersonGeneratorApi
 
                 if (firstFileName == null)
                 {
-                    SaveIdentifyAsync(4);
+                    if (i == 0)
+                    {
+                        IdentifyImagesAsync();
+                    }
+                    else
+                    {
+                        await SaveIdentifyAsync(4);
+                    }
                 }
 
+                i++;
             } while (firstFileName == null);
 
             var path = _identPath + firstFileName;
@@ -104,15 +112,15 @@ namespace PersonGeneratorApi
 
 
             //Download more if there's not enough photos left
-            if (dir.GetFiles().Length < 16)
-            {
-                Task.Run(() => SaveIdentifyAsync(24));
-            }
+            //if (dir.GetFiles().Length < 8)
+            //{
+            //    await SaveIdentifyAsync(12);
+            //}
         }
 
         private static async Task<byte[]> ResizeImageAsync(string path)
         {
-            Byte[] bytes = new byte[0];
+            Byte[] bytes = Array.Empty<byte>();
 
             //Because File.Move can still use file
             try
@@ -164,15 +172,15 @@ namespace PersonGeneratorApi
             return bytes;
         }
 
-        private static async void SaveIdentifyAsync(int count)
+        private static async Task SaveIdentifyAsync(int count)
         {
             await Task.Run(() => SaveImages(count));
-            IdentifyImages();
+            IdentifyImagesAsync();
         }
 
         private static void SaveImages(int count)
         {
-            lock (SaveLocker)
+            lock (_saveLocker)
             {
                 using (WebClient client = new WebClient())
                 {
@@ -187,58 +195,68 @@ namespace PersonGeneratorApi
             }
         }
 
-        private static void IdentifyImages()
+        private static async void IdentifyImagesAsync()
         {
             DirectoryInfo dir = new DirectoryInfo(_unidentPath);
-            var length = dir.GetFiles().Length;
+            var seed = new Random().Next(Int32.MaxValue);
+            var tmp_dir = Directory.CreateDirectory(dir.FullName + $"\\{seed}");
 
             List<GenderModel.ModelInput> inputs = new List<GenderModel.ModelInput>();
             List<GenderModel.ModelOutput> outputs = new List<GenderModel.ModelOutput>();
             List<string> paths = new List<string>();
 
-            var seed = new Random().Next(Int32.MaxValue);
-            var tmp_dir = Directory.CreateDirectory(dir.FullName + $"\\{seed}");
-
-            for (int i = 0; i < length; i++)
+            lock (_identLocker)
             {
-                try
+                FileInfo[] images = dir.GetFiles("*.jpg");
+                for (int i = 0; i < images.Count(); i++)
                 {
-                    dir.GetFiles()[i].MoveTo($"{tmp_dir.FullName}\\{i}.jpg");
+                    try
+                    {
+                        if (images[i].Length >= 10)
+                        {
+                            images[i].MoveTo($"{tmp_dir.FullName}\\{i}.jpg");
+                        }
+                      
+                    }
+                    //Image can be already identified and replaced/deleted
+                    catch (Exception ex) { Console.WriteLine(ex.Message); }
                 }
-                //Image can be already identified and replaced/deleted
-                catch { }
             }
 
             var tmp_length = tmp_dir.GetFiles().Length;
-            for (int i = 0; i < tmp_length; i++)
+
+            await Task.Run(() =>
             {
-                GenderModel.ModelInput model = new GenderModel.ModelInput();
-                model.ImageSource = File.ReadAllBytes(tmp_dir.GetFiles()[i].FullName);
-                paths.Add(tmp_dir.GetFiles()[i].FullName);
-                inputs.Add(model);
-            }
-
-            //My own method to predict groups
-            outputs.AddRange(GenderModel.PredictGroup(inputs));
-
-            for (int i = 0; i < tmp_length; i++)
-            {
-                var path = paths[i];
-
-                if (outputs[i].PredictedLabel == "male")
+                for (int i = 0; i < tmp_length; i++)
                 {
-                    File.Move(path, $"{_identPath}male_{DateTime.Now:yyyy_MM_dd_HH_mm_ss.fff}_{i}.jpg");
+                    GenderModel.ModelInput model = new GenderModel.ModelInput();
+                    model.ImageSource = File.ReadAllBytesAsync(tmp_dir.GetFiles()[i].FullName).Result;
+                    paths.Add(tmp_dir.GetFiles()[i].FullName);
+                    inputs.Add(model);
                 }
-                else if (outputs[i].PredictedLabel == "female")
-                {
-                    File.Move(path, $"{_identPath}female_{DateTime.Now:yyyy_MM_dd_T_HH_mm_ss.fff}_{i}.jpg");
-                }
-                else
-                {
-                    File.Delete(path);
-                }
-            }
 
+                //My own method to predict groups
+                outputs.AddRange(GenderModel.PredictGroup(inputs));
+
+                for (int i = 0; i < tmp_length; i++)
+                {
+                    var path = paths[i];
+
+                    if (outputs[i].Score[0] >= 0.65f) //using numbers instead PredictionLabel to adjust the accuracy
+                    {
+                        File.Move(path, $"{_identPath}male_{DateTime.Now:yyyy_MM_dd_HH_mm_ss.fff}_{i}.jpg");
+                    }
+                    else if (outputs[i].Score[1] >= 0.65f)
+                    {
+                        File.Move(path, $"{_identPath}female_{DateTime.Now:yyyy_MM_dd_T_HH_mm_ss.fff}_{i}.jpg");
+                    }
+                    else
+                    {
+                        File.Delete(path);
+                    }
+                }
+            });
+            
             tmp_dir.Delete();
         }
     }
