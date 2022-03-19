@@ -71,16 +71,20 @@
                         </tr>
 
                         <tr>
-                            <td>
-                                <form>
-                                    <button type="button" class="btn btn-secondary" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Name: @mod.Name Rarity: @mod.Rarity" >
-                                            Info
-                                    </button>
-                                </form>
-                            </td>
+	                        <td>
+		                        <div id="msg_pop_@mod.Salary" class="msg_pop">
+			                        <span class="msg_close" onclick="document.getElementById('msg_pop_@mod.Salary').style.display='none'; return false;">X</span>
+			                        <h4>Работает!</h4>
+			                        @mod.Name нанят!!!
+		                        </div> 
+
+		                        <form>
+			                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('msg_pop_@mod.Salary').style.display = 'block';return false;">
+				                        Hire
+			                        </button>
+		                        </form>
+	                        </td>
                         </tr>
-
-
                     </table>
                 </td>
             }
@@ -89,6 +93,88 @@
     <br />
 </div>
 <form method="post">
-    <button asp-controller="Home" asp-action="RefreshNewPeople">Refresh New</button>
-    <button asp-controller="Home" asp-action="RefreshSystemPeople">Refresh System</button>
+	<button asp-controller="Home" asp-action="RefreshNewPeople">Refresh New</button>
+	<button asp-controller="Home" asp-action="RefreshSystemPeople">Refresh System</button>
 </form>
+
+<div id="msg_pop_1" class="msg_pop">
+	<span class="msg_close" onclick="document.getElementById('msg_pop_1').style.display='none'; return false;">X</span>
+	<h4>Работает!</h4>
+	.Name нанят!!!
+</div> 
+
+<script type="text/javascript">
+	var delay_popup = 2000;
+	var msg_pop = document.getElementsByClassName('msg_pop');
+	setTimeout("document.getElementsByClassName('msg_pop').style.display='block';document.getElementsByClassName('msg_pop').className += 'fadeIn';", delay_popup);
+</script> 
+
+<style>
+	.msg_pop{
+		background-color: rgba(0, 0, 0, 0.7);
+		display: none;
+		position: fixed;
+		z-index: 99999;
+		bottom: 30px;
+		left:30px;
+		width: 250px;
+		padding: 10px;
+		color:#fff;
+		font-size:13px;
+		line-height:13px;
+		-webkit-box-shadow: 0px 0px 10px #999;
+		-moz-box-shadow: 0px 0px 10px #999;
+		box-shadow: 0px 0px 10px #999;
+		-webkit-border-radius: 15px;
+		-moz-border-radius: 15px;
+		border-radius: 15px;
+	}
+	.msg_pop h4{
+		margin:0;
+		text-align:center;
+		font-size:15px;
+	}
+ 
+	#msg_close{
+		display:block;
+		position:absolute;
+		top:5px;
+		right:10px;
+		line-height:15px;
+		width:16px;
+		height:16px;
+		text-align:center;
+		color:#fff;
+		cursor:pointer;
+		-webkit-border-radius: 10px;
+		-moz-border-radius: 10px;
+		-ms-border-radius: 10px;
+		-o-border-radius: 10px;
+		border-radius: 10px;
+	}
+	#msg_close:hover {
+		background-color:#fff;
+		color:#000;
+	}
+	.fadeIn{
+		animation-name: fadeIn;
+		-webkit-animation-name: fadeIn; 
+		animation-duration: 0.4s; 
+		-webkit-animation-duration: 0.4s;
+		animation-timing-function: ease-in-out; 
+		-webkit-animation-timing-function: ease-in-out;     
+		visibility: visible !important; 
+	}
+  
+	@@keyframes fadeIn {
+	0% {transform: scale(0.7);opacity: 0.5;}
+	80% {transform: scale(1.1);}       
+	100% {transform: scale(1);opacity: 1;}       
+	}
+  
+	@@-webkit-keyframes fadeIn {
+	0% {-webkit-transform: scale(0.7);opacity: 0.5;}
+	80% {-webkit-transform: scale(1.1);}       
+	100% {-webkit-transform: scale(1);opacity: 1;}       
+	}
+	</style>
