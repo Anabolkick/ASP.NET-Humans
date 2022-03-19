@@ -1,11 +1,10 @@
-﻿@using System.Collections
-@model IEnumerable<Worker>;
+﻿@model IEnumerable<Worker>;
 @{
     ViewData["Title"] = "Get People Page";
 }
 
 <div class="text-center">
-    <table style="border-spacing: 7px 11px; border-collapse: separate; ">
+    <table style="border-spacing: 7px 11px; border-collapse: separate;">
         <tr>
             <td>
                 <table>
@@ -20,7 +19,6 @@
                         <td>Salary</td>
                     </tr>
                     <tr>
-
                         <td><img src="~/img/empty.png" alt=":D" width="200" height="200"></td>
                     </tr>
                 </table>
@@ -63,7 +61,7 @@
                                         break;
                                 }
                             }
-                            <td style="background: @color; width: 210px; height: 210px; ">
+                            <td style="background: @color; width: 210px; height: 210px;">
                                 @{
                                     var user = (User)ViewBag.User;
                                     var scr = @$"/Images/Users/{user.Id}/{mod.Id}.jpg";
@@ -73,20 +71,24 @@
                         </tr>
 
                         <tr>
-                            <form method="post">
-                                <td> <button asp-controller="Home" asp-action="Index"> Image </button> </td>
-                            </form>
+                            <td>
+                                <form>
+                                    <button type="button" class="btn btn-secondary" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Name: @mod.Name Rarity: @mod.Rarity" >
+                                            Info
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
 
-                            </tr>
 
-                        </table>
-                    </td>
-                }
+                    </table>
+                </td>
+            }
         </tr>
     </table>
     <br />
 </div>
 <form method="post">
-    <button asp-controller="Home" asp-action="RefreshNewPeople">Refresh New</button>  
+    <button asp-controller="Home" asp-action="RefreshNewPeople">Refresh New</button>
     <button asp-controller="Home" asp-action="RefreshSystemPeople">Refresh System</button>
 </form>

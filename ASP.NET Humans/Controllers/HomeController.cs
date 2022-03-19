@@ -86,7 +86,7 @@ namespace ASP.NET_Humans.Controllers
             #region If workers < 4 --> generate new
             if (workers.Count < 4)
             {
-                workers = GenerateNewWorker(user).Result;
+                workers = GenerateNewWorkers(user, 4 - workers.Count).Result;
                 if (workers == null)
                 {
                     return BadRequest($"Error while generate workers. Please, refresh the page and try again");
@@ -108,18 +108,16 @@ namespace ASP.NET_Humans.Controllers
             return View(workers);
         }
 
-        private async Task<List<Worker>> GenerateNewWorker(User user)
+        private async Task<List<Worker>> GenerateNewWorkers(User user, int count)
         {
             List<Worker> workers = new List<Worker>();
-            List<string> workersId = new List<string>();
-
             try
             {
                 await Task.Run(() =>
                 {
                     using var httpClient = new HttpClient();
                     httpClient.DefaultRequestHeaders.Add("AccessKey", _configuration["ApiAccessKey"]);
-                    HttpResponseMessage response = httpClient.GetAsync("https://localhost:44320/Worker/4").Result;
+                    HttpResponseMessage response = httpClient.GetAsync($"https://localhost:44320/Worker/{count}").Result;
                     response.EnsureSuccessStatusCode();
                     var result = response.Content.ReadFromJsonAsync(typeof(IEnumerable<Worker>)).Result;
                     workers = (List<Worker>)result;
@@ -148,7 +146,6 @@ namespace ASP.NET_Humans.Controllers
             return workers;
         }
 
-
         [HttpPost]
         public async Task<IActionResult> RefreshNewPeople()
         {
@@ -172,7 +169,6 @@ namespace ASP.NET_Humans.Controllers
 
             return RedirectToAction("GetPeople");
         }
-
 
         [HttpPost]
         public async Task<IActionResult> RefreshSystemPeople()
@@ -238,35 +234,13 @@ namespace ASP.NET_Humans.Controllers
         {
             return View();
         }
-
-        public string Tutor()
-        {
-            var elem = Request.Headers;
-            string res = "";
-            foreach (var VARIABLE in elem)
-            {
-                res += $"{VARIABLE.Key}  - {VARIABLE.Value} \n";
-            }
-
-            res += "\n request \n";
-            return res;
-        }
-
+    
+      
         public IActionResult Privacy()
         {
             return View();
         }
-
-        // [HttpPost]
-        //public IActionResult GetPerson(string name, int age, int salary, Sex sex)
-        //{
-        //    Worker worker = new Worker();
-        //    worker.Name = name;
-        //    worker.Age = age;
-        //    worker.Salary = salary;
-        //    worker.Sex = sex;
-
-        //    return View(worker);
-        //}
+     
     }
+
 }
