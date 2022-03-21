@@ -1,5 +1,5 @@
 /**
- * Toast (https://github.com/itchief/ui-components/tree/master/toast_toast)
+ * Toast (https://github.com/itchief/ui-components/tree/master/toast)
  * Copyright 2020 - 2021 Alexander Maltsev
  * Licensed under MIT (https://github.com/itchief/ui-components/blob/master/LICENSE)
 **/
@@ -38,12 +38,12 @@ class Toast {
       this._el.classList.remove('toast_show');
       this._el.remove();
     }, {once : true});
-    const event = new CustomEvent('hide.toast_toast', { detail: { target: this._el } });
+    const event = new CustomEvent('hide.toast', { detail: { target: this._el } });
     document.dispatchEvent(event);
   }
   _create() {
     const el = document.createElement('div');
-    el.classList.add('toast_toast');
+    el.classList.add('toast');
     el.classList.add(`toast_${this._theme}`);
     let html = `{header}<div class="toast__body"></div><button class="toast__close" type="button"></button>`;
     const htmlHeader = this._title === false ? '' : '<div class="toast__header"></div>';
@@ -56,11 +56,11 @@ class Toast {
     }
     el.querySelector('.toast__body').textContent = this._text;
     this._el = el;
-    if (!document.querySelector('.toast_toast-container')) {
+    if (!document.querySelector('.toast-container')) {
       const container = document.createElement('div');
-      container.classList.add('toast_toast-container');
+      container.classList.add('toast-container');
       document.body.append(container);
     }
-    document.querySelector('.toast_toast-container').append(this._el);
+    document.querySelector('.toast-container').append(this._el);
   }
 }

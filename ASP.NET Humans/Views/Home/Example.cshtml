@@ -1,6 +1,8 @@
 ﻿<head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Toast on pure JavaScript</title>
+    <title>Toast on pure JavaScript</title> 
+    <link href="~/css/toast.css" rel="stylesheet">
+    <script type="text/javascript" src="~/js/toast.js"></script>
 </head>
 
 <body style="min-height: 100vh;">
@@ -79,7 +81,7 @@
           theme - тема
           autohide - нужно ли автоматически скрыть всплывающее сообщение через interval миллисекунд interval - количество миллисекунд через которые необходимо скрыть сообщение
         */
-        new Toast({
+        let t = new Toast({
             title: document.querySelector('[name="toast-without-title"]').checked === true ?
                 false : document.querySelector('[name="toast-title"]').value,
             text: document.querySelector('[name="toast-text"]').value,
@@ -87,6 +89,7 @@
             autohide: document.querySelector('[name="toast-autohide"]').checked,
             interval: parseInt(document.querySelector('[name="toast-interval"]').value)
         });
+        t._show();
     }
 
     window.addEventListener('load', (e) => {
