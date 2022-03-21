@@ -19,7 +19,7 @@
   width: var(--toast-width);
 }
 
-.toast {
+.toast_toast {
   font-size: 0.875rem;
   background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.05);

@@ -1,0 +1,14 @@
+[
+  {
+    "outputFileName": "wwwroot/js/toast.min.js",
+    "inputFiles": [
+      "wwwroot/js/toast.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/toast.min.css",
+    "inputFiles": [
+      "wwwroot/css/toast.css"
+    ]
+  }
+]

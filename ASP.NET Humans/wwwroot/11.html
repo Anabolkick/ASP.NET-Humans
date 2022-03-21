@@ -32,18 +32,18 @@
   <div style="max-width: 280px; padding: 15px; border: 1px solid #f5f5f5;">
     <div style="margin-bottom: 0.5rem;">
       Название заголовка:
-      <input name="toast-title" type="text" value="Заголовок" style="width: 100%;">
+      <input name="toast_toast-title" type="text" value="Заголовок" style="width: 100%;">
     </div>
     <div style="margin-bottom: 0.5rem;">
-      <input name="toast-without-title" type="checkbox">без заголовка
+      <input name="toast_toast-without-title" type="checkbox">без заголовка
     </div>
     <div style="margin-bottom: 0.5rem;">
       Текст сообщения:
-      <input name="toast-text" type="text" value="Сообщение..." style="width: 100%;">
+      <input name="toast_toast-text" type="text" value="Сообщение..." style="width: 100%;">
     </div>
     <div style="margin-bottom: 0.5rem;">
       Тема:
-      <select class="form-control" name="toast-theme" style="width: 100%;">
+      <select class="form-control" name="toast_toast-theme" style="width: 100%;">
         <option selected value="default">default</option>
         <option value="primary">primary</option>
         <option value="secondary">secondary</option>
@@ -56,29 +56,29 @@
       </select>
     </div>
     <div style="margin-bottom: 0.5rem;">
-      <input name="toast-autohide" type="checkbox" checked>автоматически скрывать
+      <input name="toast_toast-autohide" type="checkbox" checked>автоматически скрывать
     </div>
     <div style="margin-bottom: 0.5rem;">
       Скрывать через (миллисекунд):
-      <input name="toast-interval" type="text" value="10000" style="width: 100%;">
+      <input name="toast_toast-interval" type="text" value="10000" style="width: 100%;">
     </div>
     <div style="margin-bottom: 0.5rem;">
-      <button id="add-toast" type="button" style="width: 100%;">Добавить toast</button>
+      <button id="add-toast" type="button" style="width: 100%;">Добавить toast_toast</button>
     </div>
   </div>
 
 
 
   <script>
-    document.querySelector('[name="toast-without-title"]').onchange = (e) => {
-      document.querySelector('[name="toast-title"]').disabled = e.target.checked;
+    document.querySelector('[name="toast_toast-without-title"]').onchange = (e) => {
+      document.querySelector('[name="toast_toast-title"]').disabled = e.target.checked;
     }
 
-    document.addEventListener('hide.toast', (e) => {
+    document.addEventListener('hide.toast_toast', (e) => {
       console.log(e.detail.target);
     });
 
-    document.querySelector('#add-toast').onclick = () => {
+    document.querySelector('#add-toast_toast').onclick = () => {
       /*
         title - название заголовка
         text - текст сообщения
@@ -86,18 +86,18 @@
         autohide - нужно ли автоматически скрыть всплывающее сообщение через interval миллисекунд interval - количество миллисекунд через которые необходимо скрыть сообщение
       */
       new Toast({
-        title: document.querySelector('[name="toast-without-title"]').checked === true ?
-          false : document.querySelector('[name="toast-title"]').value,
-        text: document.querySelector('[name="toast-text"]').value,
-        theme: document.querySelector('[name="toast-theme"] option:checked').value,
-        autohide: document.querySelector('[name="toast-autohide"]').checked,
-        interval: parseInt(document.querySelector('[name="toast-interval"]').value)
+        title: document.querySelector('[name="toast_toast-without-title"]').checked === true ?
+          false : document.querySelector('[name="toast_toast-title"]').value,
+        text: document.querySelector('[name="toast_toast-text"]').value,
+        theme: document.querySelector('[name="toast_toast-theme"] option:checked').value,
+        autohide: document.querySelector('[name="toast_toast-autohide"]').checked,
+        interval: parseInt(document.querySelector('[name="toast_toast-interval"]').value)
       });
     }
 
 window.addEventListener('load', (e) => {
   const showToast = () => {
-    localStorage.setItem('toast-time', Date.now());
+    localStorage.setItem('toast_toast-time', Date.now());
     new Toast({
       title: 'Заголовок',
       text: 'Сообщение...',
@@ -105,7 +105,7 @@ window.addEventListener('load', (e) => {
       autohide: false
     });
   }
-  const time = localStorage.getItem('toast-time');
+  const time = localStorage.getItem('toast_toast-time');
   if (time) {
     // если прошло больше 3 часов
     if (Date.now() > time + 1000 * 60 * 60 * 3) {

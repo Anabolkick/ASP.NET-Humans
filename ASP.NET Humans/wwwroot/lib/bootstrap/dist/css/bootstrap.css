@@ -5669,7 +5669,7 @@ a.close.disabled {
   pointer-events: none;
 }
 
-.toast {
+.toast_toast {
   max-width: 350px;
   overflow: hidden;
   font-size: 0.875rem;
@@ -5683,20 +5683,20 @@ a.close.disabled {
   border-radius: 0.25rem;
 }
 
-.toast:not(:last-child) {
+.toast_toast:not(:last-child) {
   margin-bottom: 0.75rem;
 }
 
-.toast.showing {
+.toast_toast.showing {
   opacity: 1;
 }
 
-.toast.show {
+.toast_toast.show {
   display: block;
   opacity: 1;
 }
 
-.toast.hide {
+.toast_toast.hide {
   display: none;
 }
 
