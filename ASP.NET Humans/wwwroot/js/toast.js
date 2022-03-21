@@ -43,7 +43,7 @@ class Toast {
   }
   _create() {
     const el = document.createElement('div');
-    el.classList.add('toast');
+    el.classList.add('toast_custom');
     el.classList.add(`toast_${this._theme}`);
     let html = `{header}<div class="toast__body"></div><button class="toast__close" type="button"></button>`;
     const htmlHeader = this._title === false ? '' : '<div class="toast__header"></div>';
