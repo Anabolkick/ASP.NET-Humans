@@ -1,4 +1,6 @@
-﻿
+﻿<!doctype html>
+<html lang="ru">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -22,7 +24,7 @@
         }
     </style>
     <link href="css/toast.css" rel="stylesheet">
-    <script src="js/toast.js"></script>
+    <script type="text/javascript" src="js/toast.js"></script>
 </head>
 
 <body style="min-height: 100vh;">
@@ -64,11 +66,10 @@
             <button id="add-toast" type="button" style="width: 100%;">Добавить toast</button>
         </div>
     </div>
-</body>
 
 
-<script text\javascript>
 
+<script type="text/javascript">
     document.querySelector('[name="toast-without-title"]').onchange = (e) => {
         document.querySelector('[name="toast-title"]').disabled = e.target.checked;
     }
@@ -95,7 +96,7 @@
     }
 
     window.addEventListener('load', (e) => {
-        showToast = () => {
+        const showToast = () => {
             localStorage.setItem('toast-time', Date.now());
             new Toast({
                 title: 'Заголовок',
@@ -104,7 +105,7 @@
                 autohide: false
             });
         }
-        time = localStorage.getItem('toast-time');
+        const time = localStorage.getItem('toast-time');
         if (time) {
             // если прошло больше 3 часов
             if (Date.now() > time + 1000 * 60 * 60 * 3) {
@@ -115,5 +116,7 @@
         }
     });
 </script>
+    
+</body>
 
-
+</html>
