@@ -93,7 +93,7 @@ namespace ASP.NET_Humans.Controllers
         [HttpGet]
         public IActionResult Login(string returnUrl = null)
         {
-            return View(new LoginViewModel { ReturnUrl = returnUrl });
+            return PartialView("_Login", new LoginViewModel { ReturnUrl = returnUrl });
         }
 
         [HttpPost]
@@ -112,7 +112,7 @@ namespace ASP.NET_Humans.Controllers
                 {
                     result = SignInResult.Failed;
                     ModelState.AddModelError("", "Can`t find account with this login/email!");
-                    return View();
+                    return PartialView("_Login");
                 }
 
 
@@ -133,7 +133,7 @@ namespace ASP.NET_Humans.Controllers
                     ModelState.AddModelError("", "Incorrect password!");
                 }
             }
-            return View(model);
+            return PartialView("_Login", model);
         }
 
         [HttpPost]

@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-
+<script src="~/js/login.js"></script> 
 <div class="text-center">
     <h1 class="display-4">@ViewData["Title"]</h1> 
     <h2 class="display-6">Developed by @Model.Developer</h2>
@@ -13,11 +13,17 @@
             <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Privacy"> Privacy </button>    
             <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Example"> Example </button>    
             <button style="background-color: lightpink;"  asp-controller="Admin" asp-action="UsersList"> Admin </button>  
-            <button style="background-color: lightpink;" id="add-toast">DANGER</button>
-            
+	        <button style="background-color: lightpink;" id="add-toast">DANGER</button>
+
+	        <a class="nav-link text-dark popup" data-url="Account/Login" data-toggle="modal" data-target="#exampleModal" id="LoginModal">Login</a>  
+	        <partial name = "_Login" /> 
         </form>
     </div>
 </div>     
+
+@*@section Scripts{  
+	<script src="~/js/login.js" asp-append-version="true"></script>  
+} *@
 
 <script type="text/javascript">
     document.querySelector('#add-toast').onclick = () => {

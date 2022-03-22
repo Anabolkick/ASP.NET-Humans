@@ -1,11 +1,13 @@
 ﻿@model List<Worker>;
+@{ int id = 0;}
 @{
     ViewData["Title"] = "Get People Page";
 }
 <head>
-    <link href="css/toast.min.css" rel="stylesheet">
-    <script src="js/toast.min.js"></script>
+	<link href="css/toast.min.css" rel="stylesheet">
+	<script src="js/toast.min.js"></script>
 </head>
+
 <body>
     <div class="text-center">
         <table style="border-spacing: 7px 11px; border-collapse: separate;">
@@ -77,10 +79,10 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <form>
-                                        <button type="button" class="btn btn-secondary" onclick="SuccessHirePopup(@i)"> Hire </button>
-                                        <button type="button" class="btn btn-secondary" onclick="FailHirePopup(@i)"> Hire </button>
-                                    </form>
+	                                <form>
+		                                <button type="button" class="btn btn-secondary" onclick="SuccessHireToast('@mod.Name');"> Hire </button>
+		                                <button type="button" class="btn btn-secondary" onclick="ErrorHireToast('@mod.Name');"> Hire </button>
+	                                </form>
                                 </td>
                             </tr>
                         </table>
@@ -97,36 +99,30 @@
 </body>
 
 
-@*<script type="text/javascript">
-
-    function FailHirePopup(id) {
-        @{int ID} = id;
-        let t = new Toast({
-            title: 'Error!',
-            text: "@{ Model[id].Name.ToString();} can`t be hired!",
-            theme: 'danger',
-            autohide: true,
-            interval: 5000
-        });
-        t._show();
-        return false;
-    }
-
-</script>*@
-        
 <script type="text/javascript">
-    @{ int id = 0;}
-    function SuccessHirePopup(id) {
-        @id = id;
-        let t = new Toast({
-            title: 'Success!',
-            text: " was hired!",
-            theme: 'success',
-            autohide: true,
-            interval: 5000
-        });
-        t._show();
-        return false;
-    }
+	function ErrorHireToast(name) {
+		let t = new Toast({
+			title: 'Error!',
+			text: name+' cant`t be hired.',
+			theme: 'danger',
+			autohide: true,
+			interval: 5000
+		});
+		t._show();
+		return false;
+	}
+</script>
 
+<script type="text/javascript">
+	function SuccessHireToast(name) {
+		let t = new Toast({
+			title: 'Success!',
+			text: name+' was successful hired.',
+			theme: 'success',
+			autohide: true,
+			interval: 5000
+		});
+		t._show();
+		return false;
+	}
 </script>
