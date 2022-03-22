@@ -12,9 +12,29 @@
         <form method="get">
             <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Privacy"> Privacy </button>    
             <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Example"> Example </button>    
-            <button style="background-color: lightpink;"  asp-controller="Admin" asp-action="UsersList"> Admin </button>
+            <button style="background-color: lightpink;"  asp-controller="Admin" asp-action="UsersList"> Admin </button>  
+            <button style="background-color: lightpink;" id="add-toast">DANGER</button>
+            
         </form>
     </div>
 </div>     
 
-
+<script type="text/javascript">
+    document.querySelector('#add-toast').onclick = () => {
+       
+        /*
+          title - название заголовка
+          text - текст сообщения
+          theme - тема
+          autohide - нужно ли автоматически скрыть всплывающее сообщение через interval миллисекунд interval - количество миллисекунд через которые необходимо скрыть сообщение
+        */
+        let t = new Toast({
+            title: 'Test',
+            text: "Danger!! (It`s test, all is ok :D)",
+            theme: 'danger',
+            autohide: false
+        });
+        t._show();
+        return false;
+    }
+</script>

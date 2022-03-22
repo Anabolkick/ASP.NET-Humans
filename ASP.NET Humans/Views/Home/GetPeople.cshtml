@@ -1,7 +1,7 @@
 ﻿@model List<Worker>;
 @{
     ViewData["Title"] = "Get People Page";
-} 
+}
 <head>
     <link href="css/toast.min.css" rel="stylesheet">
     <script src="js/toast.min.js"></script>
@@ -27,8 +27,9 @@
                         </tr>
                     </table>
                 </td>
-                @foreach (var mod in Model)
+                @for (var i = 0; i < Model.Count; i++)
                 {
+                    var mod = Model[i];
                     <td>
                         <table>
                             <tr>
@@ -69,45 +70,19 @@
                                     @{
                                         var user = (User)ViewBag.User;
                                         var scr = @$"/Images/Users/{user.Id}/{mod.Id}.jpg";
-                                        <img src="@scr" alt="Can`t load image :D" width="200" height="200">
                                     }
-                                </td>       
-                            </tr>  
-                        <tr>
-                            <td>
-                                <div class="msg_pop alert " id="msg_pop_@mod.Id" title="Horey!!!">
-                                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-                                     @mod.Name нанят!!!
-                                </div>
+                                    <img src="@scr" alt="Can`t load image :D" width="200" height="200">
 
-                                <form>
-                                    <button type="button" class="btn btn-secondary" onclick="showWindow('msg_pop_@mod.Id')"> Hire </button>
-                                </form>  
-                               
-                          
-                                <script>
-                                    function showToast() {
-                                        new Toast({
-                                            title: 'Заголовок',
-                                            text: 'Сообщение...',
-                                            theme: 'warning',
-                                            autohide: false
-                                        });
-                                        Toast.call();
-                                    };
-                                </script>  
-
-                                <div class="toast_custom toast_message toast_default">
-                                    <div class="toast__body">Сообщение...</div>
-                                    <button class="toast__close" type="button"></button>
-                                </div>
-
-                                <form>
-                                    <button type="button" class="btn btn-secondary" onclick="showToast()"> Hire 2 </button>
-                                </form>
-
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <form>
+                                        <button type="button" class="btn btn-secondary" onclick="SuccessHirePopup(@i)"> Hire </button>
+                                        <button type="button" class="btn btn-secondary" onclick="FailHirePopup(@i)"> Hire </button>
+                                    </form>
+                                </td>
+                            </tr>
                         </table>
                     </td>
                 }
@@ -119,210 +94,39 @@
         <button asp-controller="Home" asp-action="RefreshNewPeople">Refresh New</button>
         <button asp-controller="Home" asp-action="RefreshSystemPeople">Refresh System</button>
     </form>
-</body>  
+</body>
 
 
-<script>
-    function showToast() {
-        new Toast({
-            title: 'Заголовок',
-            text: 'Сообщение...',
-            theme: 'warning',
-            autohide: false
+@*<script type="text/javascript">
+
+    function FailHirePopup(id) {
+        @{int ID} = id;
+        let t = new Toast({
+            title: 'Error!',
+            text: "@{ Model[id].Name.ToString();} can`t be hired!",
+            theme: 'danger',
+            autohide: true,
+            interval: 5000
         });
-        Toast.call();
-    };
-</script>  
+        t._show();
+        return false;
+    }
 
+</script>*@
+        
 <script type="text/javascript">
-    function showWindow(pop_id) {
-        document.getElementById(pop_id).style.display = 'block';
-        setTimeout(function () { hideWindow(pop_id); }, 5000);
+    @{ int id = 0;}
+    function SuccessHirePopup(id) {
+        @id = id;
+        let t = new Toast({
+            title: 'Success!',
+            text: " was hired!",
+            theme: 'success',
+            autohide: true,
+            interval: 5000
+        });
+        t._show();
+        return false;
     }
 
-    function hideWindow(pop_id) {
-        document.getElementById(pop_id).style.display = 'none';
-    }
 </script>
-
-<style>
-    /* CSS-переменные */
-    :root {
-        --toast-border-radius: 0.25rem;
-        --toast-theme-default: #fff;
-    }
-
-    .toast_custom {
-        font-size: 0.875rem;
-        background-clip: padding-box;
-        border: 1px solid rgba(0, 0, 0, 0.05);
-        border-radius: var(--toast-border-radius);
-        box-shadow: 0 .125rem .25rem rgba(0, 0, 0, 0.075);
-        display: none;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .toast_default {
-        color: #212529;
-        background-color: var(--toast-theme-default);
-    }
-
-    .toast_custom:not(:last-child) {
-        margin-bottom: 0.75rem;
-    }
-
-    .toast__header {
-        position: relative;
-        padding: 0.5rem 2.25rem 0.5rem 1rem;
-        background-color: rgba(0, 0, 0, 0.03);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    }
-
-    .toast__close {
-        content: "";
-        position: absolute;
-        top: 0.75rem;
-        right: 0.75rem;
-        width: 0.875em;
-        height: 0.875em;
-        background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/0.875em auto no-repeat;
-        border: 0;
-        opacity: 0.5;
-        cursor: pointer;
-        transition: opacity 0.1s ease-in-out;
-    }
-
-    .toast__close:hover {
-        opacity: 1;
-    }
-
-    .toast__body {
-        padding: 1rem;
-    }
-
-    .toast_message .toast__body {
-        padding-right: 2.25rem;
-    }
-
-
-
-
-
-    /* The alert message box */
-    .alert {
-        padding: 20px;
-        background-color: #f44336; /* Red */
-        color: white;
-        margin-bottom: 15px;
-    }
-
-    /* The close button */
-    .closebtn {
-        margin-left: 15px;
-        color: white;
-        font-weight: bold;
-        float: right;
-        font-size: 22px;
-        line-height: 20px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-        /* When moving the mouse over the close button */
-        .closebtn:hover {
-            color: black;
-        }
-
-
-    .msg_pop {
-        background-color: rgba(0, 0, 0, 0.7);
-        display: none;
-        position: fixed;
-        z-index: 99999;
-        bottom: 30px;
-        left: 30px;
-        width: 250px;
-        padding: 10px;
-        color: #fff;
-        font-size: 13px;
-        line-height: 13px;
-        -webkit-box-shadow: 0px 0px 10px #999;
-        -moz-box-shadow: 0px 0px 10px #999;
-        box-shadow: 0px 0px 10px #999;
-        -webkit-border-radius: 15px;
-        -moz-border-radius: 15px;
-        border-radius: 15px;
-    }
-
-        .msg_pop h4 {
-            margin: 0;
-            text-align: center;
-            font-size: 15px;
-        }
-
-    #msg_close {
-        display: block;
-        position: absolute;
-        top: 5px;
-        right: 10px;
-        line-height: 15px;
-        width: 16px;
-        height: 16px;
-        text-align: center;
-        color: #fff;
-        cursor: pointer;
-        -webkit-border-radius: 10px;
-        -moz-border-radius: 10px;
-        -ms-border-radius: 10px;
-        -o-border-radius: 10px;
-        border-radius: 10px;
-    }
-
-        #msg_close:hover {
-            background-color: #fff;
-            color: #000;
-        }
-
-    .fadeIn {
-        animation-name: fadeIn;
-        -webkit-animation-name: fadeIn;
-        animation-duration: 0.4s;
-        -webkit-animation-duration: 0.4s;
-        animation-timing-function: ease-in-out;
-        -webkit-animation-timing-function: ease-in-out;
-        visibility: visible !important;
-    }
-
-    @@keyframes fadeIn {
-        0% {
-            transform: scale(0.7);
-            opacity: 0.5;
-        }
-
-        80% {
-            transform: scale(1.1);
-        }
-
-        100% {
-            transform: scale(1);
-            opacity: 1;
-        }
-    }
-
-    @@-webkit-keyframes fadeIn {
-        0% {
-            -webkit-transform: scale(0.7);
-            opacity: 0.5;
-        }
-
-        80% {
-            -webkit-transform: scale(1.1);
-        }
-
-        100% {
-            -webkit-transform: scale(1);
-            opacity: 1;
-        }
-    }
-</style>
