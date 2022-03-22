@@ -234,8 +234,11 @@ namespace ASP.NET_Humans.Controllers
         {
             return View();
         }
-    
-      
+
+        public IActionResult Example()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();
