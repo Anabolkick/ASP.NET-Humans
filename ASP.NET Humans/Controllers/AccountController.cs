@@ -95,9 +95,9 @@ namespace ASP.NET_Humans.Controllers
         {
             return PartialView("_Login", new LoginViewModel { ReturnUrl = returnUrl });
         }
-
+        
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
@@ -118,7 +118,7 @@ namespace ASP.NET_Humans.Controllers
 
                 if (result.Succeeded)
                 {
-                    // проверяем, принадлежит ли URL приложению
+                    //проверяем, принадлежит ли URL приложению
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {
                         return Redirect(model.ReturnUrl);

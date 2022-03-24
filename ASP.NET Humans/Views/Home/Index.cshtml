@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-<script src="~/js/login.js"></script> 
+
 <div class="text-center">
     <h1 class="display-4">@ViewData["Title"]</h1> 
     <h2 class="display-6">Developed by @Model.Developer</h2>
@@ -21,26 +21,6 @@
     </div>
 </div>     
 
-@*@section Scripts{  
+@section Scripts{  
 	<script src="~/js/login.js" asp-append-version="true"></script>  
-} *@
-
-<script type="text/javascript">
-    document.querySelector('#add-toast').onclick = () => {
-       
-        /*
-          title - название заголовка
-          text - текст сообщения
-          theme - тема
-          autohide - нужно ли автоматически скрыть всплывающее сообщение через interval миллисекунд interval - количество миллисекунд через которые необходимо скрыть сообщение
-        */
-        let t = new Toast({
-            title: 'Test',
-            text: "Danger!! (It`s test, all is ok :D)",
-            theme: 'danger',
-            autohide: false
-        });
-        t._show();
-        return false;
-    }
-</script>
+} 
