@@ -9,13 +9,7 @@
 
             function modelPopup(reff) {
                 var url = $(reff).data('url');
-
-                $.get(url).done(function (data) {
-                    debugger;
-                    $('#modal-create-edit-user').find(".modal-dialog").html(data);
-                    $('#modal-create-edit-user > .modal', data).modal("show");
-                });
-
+                $.get(url).done();
             }
         }
 
@@ -29,6 +23,8 @@
     });
 }(jQuery));
 
+
+
 $("#login-btn").click(function () {
     var model = new Object();
     model.Email_Login = $("#Email_Login").val();
@@ -40,11 +36,7 @@ $("#login-btn").click(function () {
             url: "/Account/Login",
             data: model,
             success: function (response) {
-                if (response != null) {
-                    alert("Name : " + response.Name + ", Designation : " + response.Designation + ", Location :" + response.Location);
-                } else {
-                    alert("Something went wrong");
-                }
+                location.reload();
             },
             failure: function (response) {
                 alert(response.responseText);
@@ -56,36 +48,26 @@ $("#login-btn").click(function () {
     }
 });
 
+function SuccessToast() {
+    let t = new Toast({
+        title: 'Success!',
+        text: 'You have successfully logged in.',
+        theme: 'success',
+        autohide: true,
+        interval: 5000
+    });
+    t._show();
+    return false;
+}
 
-//$('#login-btn').click(function () {
-//    debugger;
-//    $.ajax({
-//        type: "POST",
-//        url: '@Url.Action("Account/Login","LoginForm")',
-
-//        //success: function (msg) {
-
-//        //    alert("111 success");
-//        //},
-//        //error: function (req, status, error) {
-//        //    alert(22225, error);
-//        //}
-//    })
-//        .done(function () {
-//            alert("success");
-//        })
-//        .fail(function () {
-//            alert(44444, "error");
-//        });
-//    function LoginData() {
-
-//        var data = {
-//            Email_Login: $("#Email_Login").val(),
-//            Password: $("#Password").val(),
-//            IsRemember: $("#IsRemember").val()
-//        };
-//        addAntiForgeryToken(data);
-//        return data;
-//    }
-
-//});
+function FailToast() {
+    let t = new Toast({
+        title: 'Success!',
+        text: 'Something went wrong',
+        theme: 'danger',
+        autohide: true,
+        interval: 5000
+    });
+    t._show();
+    return false;
+}

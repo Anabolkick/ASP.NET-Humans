@@ -9,15 +9,12 @@
 
     <hr size="3" color="black" />
     <div class ="text-left">
-        <form method="get">
-            <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Privacy"> Privacy </button>    
-            <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Example"> Example </button>    
-            <button style="background-color: lightpink;"  asp-controller="Admin" asp-action="UsersList"> Admin </button>  
-	        <button style="background-color: lightpink;" id="add-toast">DANGER</button>
-
-	        <a class="nav-link text-dark popup" data-url="Account/Login" data-toggle="modal" data-target="#exampleModal" id="LoginModal">Login</a>  
-	        <partial name = "_Login" /> 
-        </form>
+	    <form method="get">
+		    <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Privacy"> Privacy </button>    
+		    <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Example"> Example </button>    
+		    <button style="background-color: lightpink;"  asp-controller="Admin" asp-action="UsersList"> Admin </button>  
+		    <button style="background-color: lightpink;" onclick="SuccessToast(); return false;">DANGER</button>
+	    </form>
     </div>
 </div>     
 

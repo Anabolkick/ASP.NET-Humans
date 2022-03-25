@@ -45,9 +45,8 @@
 						else
 						{
 							<li class="nav-item">
-								<a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login"
-								   data-toggle="modal" data-target="#exampleModal">Login</a>
-								@*<a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>*@
+								<a class="nav-link text-dark popup" data-url="Account/Login" data-toggle="modal" data-target="#LoginModal">Login</a>  
+								<partial name = "_Login" /> 
 							</li>
 							<li class="nav-item">
 								<a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>

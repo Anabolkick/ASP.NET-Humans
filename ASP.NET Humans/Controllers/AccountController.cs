@@ -112,6 +112,7 @@ namespace ASP.NET_Humans.Controllers
                 {
                     result = SignInResult.Failed;
                     ModelState.AddModelError("", "Can`t find account with this login/email!");
+                    ViewData["JavaScriptFunction"] = "SuccessToast();"; 
                     return PartialView("_Login");
                 }
 
@@ -121,15 +122,19 @@ namespace ASP.NET_Humans.Controllers
                     //проверяем, принадлежит ли URL приложению
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {
+                        ViewBag.JavaScriptFunction = "SuccessToast();";
                         return Redirect(model.ReturnUrl);
+
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        ViewBag.JavaScriptFunction = "SuccessToast();";
+                        //return RedirectToAction("Index", "Home");
                     }
                 }
                 else
                 {
+                    ViewBag.JavaScriptFunction = "SuccessToast();";
                     ModelState.AddModelError("", "Incorrect password!");
                 }
             }
