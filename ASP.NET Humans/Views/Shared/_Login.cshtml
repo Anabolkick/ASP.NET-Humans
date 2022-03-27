@@ -1,5 +1,6 @@
 ﻿@model ASP.NET_Humans.ViewModels.LoginViewModel
 <!-- Modal -->
+
 <div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -13,18 +14,18 @@
 				<div class="modal-body">
 					<div asp-validation-summary="ModelOnly"></div>
 					<div>
-						<label asp-for="Email_Login"></label><br />
-						<input id="Email_Login" asp-for="Email_Login" />
+						<label asp-for="Email_Login"></label><br/>
+						<input id="Email_Login" asp-for="Email_Login"/>
 						<span asp-validation-for="Email_Login"></span>
 					</div>
 					<div>
-						<label asp-for="Password"></label><br />
-						<input id="Password" asp-for="Password" />
+						<label asp-for="Password"></label><br/>
+						<input id="Password" asp-for="Password"/>
 						<span asp-validation-for="Password"></span>
 					</div>
 					<div>
-						<label asp-for="IsRemember"></label><br />
-						<input id="IsRemember" asp-for="IsRemember" />
+						<label asp-for="IsRemember"></label><br/>
+						<input id="IsRemember" asp-for="IsRemember"/>
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -35,28 +36,5 @@
 	</div>
 </div>
 
-<script type="text/javascript">
-	function SuccessToast() {
-		let t = new Toast({
-			title: 'Success!',
-			text: 'You have successfully logged in.',
-			theme: 'success',
-			autohide: true,
-			interval: 5000
-		});
-		t._show();
-		return false;
-	}
 
-	function FailToast() {
-		let t = new Toast({
-			title: 'Success!',
-			text: 'Something went wrong',
-			theme: 'danger',
-			autohide: true,
-			interval: 5000
-		});
-		t._show();
-		return false;
-	}
-</script>
+

@@ -1,9 +1,11 @@
 ﻿using System.Net.Mail;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ASP.NET_Humans.Models;
 using ASP.NET_Humans.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.WebEncoders.Testing;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace ASP.NET_Humans.Controllers
@@ -27,6 +29,7 @@ namespace ASP.NET_Humans.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -89,16 +92,14 @@ namespace ASP.NET_Humans.Controllers
                 return Problem("Error while confirming your email!" + "\n" + result.Errors);
             }
         }
-
         [HttpGet]
         public IActionResult Login(string returnUrl = null)
         {
-            return PartialView("_Login", new LoginViewModel { ReturnUrl = returnUrl });
+            return PartialView("_Login", new LoginViewModel());
         }
-        
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -111,34 +112,17 @@ namespace ASP.NET_Humans.Controllers
                 else
                 {
                     result = SignInResult.Failed;
-                    ModelState.AddModelError("", "Can`t find account with this login/email!");
-                    ViewData["JavaScriptFunction"] = "SuccessToast();"; 
-                    return PartialView("_Login");
+                    TempData["JavaScriptFunction"] = "FailToast('Can`t find account with this login/email!');";
+                    return;
                 }
 
-
-                if (result.Succeeded)
+                if (!result.Succeeded)
                 {
-                    //проверяем, принадлежит ли URL приложению
-                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
-                    {
-                        ViewBag.JavaScriptFunction = "SuccessToast();";
-                        return Redirect(model.ReturnUrl);
-
-                    }
-                    else
-                    {
-                        ViewBag.JavaScriptFunction = "SuccessToast();";
-                        //return RedirectToAction("Index", "Home");
-                    }
+                    TempData["JavaScriptFunction"] = "FailToast('Incorrect password!');";
+                    return;
                 }
-                else
-                {
-                    ViewBag.JavaScriptFunction = "SuccessToast();";
-                    ModelState.AddModelError("", "Incorrect password!");
-                }
+                TempData["JavaScriptFunction"] = "SuccessToast('You have successfully logged in.');";
             }
-            return PartialView("_Login", model);
         }
 
         [HttpPost]

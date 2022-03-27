@@ -21,7 +21,5 @@ namespace ASP.NET_Humans.ViewModels
 
         [Display(Name = "Remember?")]
         public bool IsRemember { get; set; }
-        public string ReturnUrl { get; set; }
-
     }
 }

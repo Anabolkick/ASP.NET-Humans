@@ -10,14 +10,9 @@
     <hr size="3" color="black" />
     <div class ="text-left">
 	    <form method="get">
-		    <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Privacy"> Privacy </button>    
-		    <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Example"> Example </button>    
+		    <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Privacy"> Privacy </button>
 		    <button style="background-color: lightpink;"  asp-controller="Admin" asp-action="UsersList"> Admin </button>  
 		    <button style="background-color: lightpink;" onclick="SuccessToast(); return false;">DANGER</button>
 	    </form>
     </div>
 </div>     
-
-@section Scripts{  
-	<script src="~/js/login.js" asp-append-version="true"></script>  
-} 

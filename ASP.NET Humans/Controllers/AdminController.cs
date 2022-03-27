@@ -39,6 +39,7 @@ namespace ASP.NET_Humans.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult EditUser(EditUserViewModel model, List<string> picked_roles)
         {
             var user = userManager.FindByIdAsync(model.Id).Result;

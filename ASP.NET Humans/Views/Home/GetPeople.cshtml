@@ -80,8 +80,8 @@
                             <tr>
                                 <td>
 	                                <form>
-		                                <button type="button" class="btn btn-secondary" onclick="SuccessHireToast('@mod.Name');"> Hire </button>
-		                                <button type="button" class="btn btn-secondary" onclick="ErrorHireToast('@mod.Name');"> Hire </button>
+		                                <button type="button" class="btn btn-secondary" onclick="SuccessToast('@mod.Name was successful hired');"> Hire </button>
+		                                <button type="button" class="btn btn-secondary" onclick="FailToast('@mod.Name cant`t be hired.');"> Hire </button>
 	                                </form>
                                 </td>
                             </tr>
@@ -97,32 +97,4 @@
         <button asp-controller="Home" asp-action="RefreshSystemPeople">Refresh System</button>
     </form>
 </body>
-
-
-<script type="text/javascript">
-	function ErrorHireToast(name) {
-		let t = new Toast({
-			title: 'Error!',
-			text: name+' cant`t be hired.',
-			theme: 'danger',
-			autohide: true,
-			interval: 5000
-		});
-		t._show();
-		return false;
-	}
-</script>
-
-<script type="text/javascript">
-	function SuccessHireToast(name) {
-		let t = new Toast({
-			title: 'Success!',
-			text: name+' was successful hired.',
-			theme: 'success',
-			autohide: true,
-			interval: 5000
-		});
-		t._show();
-		return false;
-	}
-</script>
+  
