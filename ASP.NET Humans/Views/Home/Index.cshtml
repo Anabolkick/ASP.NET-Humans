@@ -3,26 +3,15 @@
     ViewData["Title"] = "Home Page";
 }
 
-
 <div class="text-center">
     <h1 class="display-4">@ViewData["Title"]</h1> 
     <h2 class="display-6">Developed by @Model.Developer</h2>
     <hr size="3" color="black" />
     <div class ="text-left">
-        <form method="get">
-            <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Privacy"> Privacy </button>    
-            <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Example"> Example </button>    
-            <button style="background-color: lightpink;"  asp-controller="Admin" asp-action="UsersList"> Admin </button>  
-	        <button style="background-color: lightpink;" id="add-toast">DANGER</button>
-
-	        <a class="nav-link text-dark popup" data-url="Account/Login" data-toggle="modal" data-target="#login-modal">Login</a>  
-	        <partial name = "_Login" /> 
-        </form>
+	    <form method="get">
+		    <button style="background-color: lightpink;"  asp-controller="Home" asp-action="Privacy"> Privacy </button>
+		    <button style="background-color: lightpink;"  asp-controller="Admin" asp-action="UsersList"> Admin </button>  
+		    <button style="background-color: lightpink;" onclick="SuccessToast(); return false;">DANGER</button>
+	    </form>
     </div>
 </div>     
-
-@section Scripts{  
-    <script src="~/js/login.js" asp-append-version="true"></script>  
-} 
-
-

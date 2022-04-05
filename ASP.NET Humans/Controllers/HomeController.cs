@@ -37,7 +37,7 @@ namespace ASP.NET_Humans.Controllers
 
             if (User.Identity is { IsAuthenticated: false })
             {
-                return Redirect("~/Account/Login/");
+                return Redirect("~/Home/");
             }
             if (login == null)
             {
@@ -147,6 +147,7 @@ namespace ASP.NET_Humans.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RefreshNewPeople()
         {
             var login = User.Identity.Name;
@@ -171,6 +172,7 @@ namespace ASP.NET_Humans.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RefreshSystemPeople()
         {
             //Проверка, есть ли в системе минимум 4 рабочих
@@ -235,10 +237,6 @@ namespace ASP.NET_Humans.Controllers
             return View();
         }
 
-        public IActionResult Example()
-        {
-            return View();
-        }
         public IActionResult Privacy()
         {
             return View();

@@ -10,19 +10,8 @@
 
             function modelPopup(reff) {
                 var url = $(reff).data('url');
-
                 $.get(url).done();
-                //(function (data) {
-                //    $().modal("show");
-                //});
             }
-
-
-            $("#login-btn").click(function () {
-                debugger;
-                $("#LoginModalForm").submit();
-
-            });
         }
 
         $this.init = function () {
@@ -34,3 +23,31 @@
         self.init();
     });
 }(jQuery));
+
+$("#login-btn").click(function () {
+    var model = new Object();
+    model.Email_Login = $("#Email_Login").val();
+    model.Password = $("#Password").val();
+    model.IsRemember = $("#IsRemember").val();
+
+
+    $.ajax({
+        type: "POST",
+        url: "/Account/Login",
+        data: model,
+
+        success: function (response) {
+            sessionStorage.setItem("login_reload", "true");
+            location.reload();
+
+        },
+        failure: function (response) {
+            FailToast();
+            alert(response.responseText);
+        },
+        error: function (response) {
+            FailToast();
+            alert(response.responseText);
+        }
+    });
+});
