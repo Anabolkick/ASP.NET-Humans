@@ -42,4 +42,7 @@
   <ItemGroup>
     <Folder Include="Images\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Worker\Worker.csproj" />
+  </ItemGroup>
 </Project>

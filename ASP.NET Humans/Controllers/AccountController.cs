@@ -90,7 +90,7 @@ namespace ASP.NET_Humans.Controllers
             }
         }
 
-        [HttpGet]
+        
         public IActionResult Login(string returnUrl = null)
         {
             return PartialView("_Login", new LoginViewModel { ReturnUrl = returnUrl });

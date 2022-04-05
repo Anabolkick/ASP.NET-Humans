@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ASP_NET_Humans;
 using Microsoft.Extensions.Configuration;
 using PersonGeneratorApi.Models;
+using OriginalWorker;
 
 namespace PersonGeneratorApi
 {
@@ -34,7 +33,7 @@ namespace PersonGeneratorApi
             return name;
         }
 
-        public static async Task<Worker> GenerateWorkerAsync(Rarity rarity)
+        public static async Task<GenWorker> GenerateWorkerAsync(Rarity rarity)
         {
             var rand = new Random();
             int salary;
@@ -58,13 +57,13 @@ namespace PersonGeneratorApi
             }
 
             Gender gender = (Gender)rand.Next(2);
-            var worker = new Worker() { Name = GenerateName(gender), Gender = gender, Salary = salary, Rarity = rarity, Id = Guid.NewGuid() };
+            var worker = new GenWorker() { Name = GenerateName(gender), Gender = gender, Salary = salary, Rarity = rarity, Id = Guid.NewGuid() };
             await ImageToWorkerAsync(worker);
 
             return worker;
         }
 
-        private static async Task ImageToWorkerAsync(Worker worker)
+        private static async Task ImageToWorkerAsync(Models.GenWorker worker)
         {
             DirectoryInfo dir = new DirectoryInfo(_identPath);
             int i = 0; //i -  iteration
@@ -216,7 +215,7 @@ namespace PersonGeneratorApi
                         {
                             images[i].MoveTo($"{tmp_dir.FullName}\\{i}.jpg");
                         }
-                      
+
                     }
                     //Image can be already identified and replaced/deleted
                     catch (Exception ex) { Console.WriteLine(ex.Message); }
@@ -256,7 +255,7 @@ namespace PersonGeneratorApi
                     }
                 }
             });
-            
+
             tmp_dir.Delete();
         }
     }

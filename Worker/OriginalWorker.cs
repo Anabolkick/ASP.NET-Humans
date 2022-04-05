@@ -1,22 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PersonGeneratorApi.Models
+namespace OriginalWorker
 {
-    public class Worker
+    public class OriginalWorker
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
         public int Salary { get; set; }
         public Rarity Rarity { get; set; }
+
+        [NotMapped]
         public Byte[] ImageBytes { get; set; }
-        public Gender Gender { get; set; }
-
     }
-
 
     public enum Rarity
     {
