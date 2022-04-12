@@ -13,5 +13,9 @@ namespace ASP.NET_Humans.Controllers
         {
             return View();
         }
+        public IActionResult Error_403()
+        {
+            return View();
+        }
     }
 }

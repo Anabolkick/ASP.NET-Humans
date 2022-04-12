@@ -31,7 +31,7 @@ namespace ASP.NET_Humans.Controllers
             DBcontext = context;
         }
 
-        public async Task<IActionResult> GetPeople()
+        public async Task<IActionResult> GetPeople()         //TODO Other class
         {
             var login = User.Identity.Name;
 

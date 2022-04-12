@@ -43,9 +43,11 @@
 						</li>}
 					else{
 						<li class="nav-item">
-							<a class="nav-link text-dark popup" data-url="Account/Login" data-toggle="modal" data-target="#LoginModal">Login</a>
-							<partial name="_Login"/>
-						</li>
+                            <a class="nav-link text-dark" data-toggle="modal" onclick="ShowLoginModal" data-target="#LoginModal">Login</a> 
+                            <partial name="_Login"/>
+                            @*@await Html.PartialAsync("_Login")*@
+                            @*<button onclick="ShowLoginModal">Login</button>*@
+                        </li>
 						<li class="nav-item">
 							<a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
 						</li>}

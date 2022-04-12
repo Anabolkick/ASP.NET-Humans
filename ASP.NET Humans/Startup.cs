@@ -18,6 +18,7 @@ namespace ASP.NET_Humans
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true)
                 .AddEnvironmentVariables();
+            
 
             Configuration = builder.Build();
         }
@@ -40,6 +41,10 @@ namespace ASP.NET_Humans
             })
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Error/Error_403";
+            });
         }
 
         
@@ -68,6 +73,10 @@ namespace ASP.NET_Humans
                 if (context.Response.StatusCode == 404)
                 {
                     context.Response.Redirect("/Error/Error_404");
+                }
+                if (context.Response.StatusCode == 403)
+                {
+                    context.Response.Redirect("/Error/Error_403");
                 }
             });
 

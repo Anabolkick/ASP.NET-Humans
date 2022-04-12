@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+
 
 namespace ASP.NET_Humans.ViewModels
 {
@@ -21,5 +16,6 @@ namespace ASP.NET_Humans.ViewModels
 
         [Display(Name = "Remember?")]
         public bool IsRemember { get; set; }
+        public string ReturnUrl { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ASP.NET_Humans.Models;
 using ASP.NET_Humans.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.WebEncoders.Testing;
@@ -92,14 +93,17 @@ namespace ASP.NET_Humans.Controllers
                 return Problem("Error while confirming your email!" + "\n" + result.Errors);
             }
         }
-        [HttpGet]
+
+        [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
         {
-            return PartialView("_Login", new LoginViewModel());
+            ViewBag.ReturnUrl = returnUrl;
+            return PartialView("_Login", new LoginViewModel { ReturnUrl = returnUrl });
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -113,17 +117,35 @@ namespace ASP.NET_Humans.Controllers
                 {
                     result = SignInResult.Failed;
                     TempData["JavaScriptFunction"] = "FailToast('Can`t find account with this login/email!');";
-                    return;
+                    return Ok();
                 }
 
-                if (!result.Succeeded)
+                if (result.Succeeded)
+                {
+                    if (string.IsNullOrEmpty(model.ReturnUrl) || Request.Path == model.ReturnUrl)
+                    {
+                        TempData["JavaScriptFunction"] = "SuccessToast('You have successfully logged in.');";
+                        return Ok();
+                    }
+                    else if(!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                    {
+                        TempData["JavaScriptFunction"] = "SuccessToast('You have successfully logged in.');";
+                        return Redirect(model.ReturnUrl);
+                    }
+                    else
+                    {
+                        TempData["JavaScriptFunction"] = "SuccessToast('You have successfully logged in.');";
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
+                else
                 {
                     TempData["JavaScriptFunction"] = "FailToast('Incorrect password!');";
-                    return;
+                    return Ok();
                 }
-                TempData["JavaScriptFunction"] = "SuccessToast('You have successfully logged in.');";
             }
-        }
+            return Ok();
+        }   
 
         [HttpPost]
         [ValidateAntiForgeryToken]
