@@ -20,7 +20,7 @@ $("#login-btn").click(function () {
     model.Email_Login = $("#Email_Login").val();
     model.Password = $("#Password").val();
     model.IsRemember = $("#IsRemember").val();
-    model.Return_Url = $("#ReturnUrl").val();
+    model.ReturnUrl = $("#ReturnUrl").val();
 
 
     $.ajax({
@@ -30,8 +30,13 @@ $("#login-btn").click(function () {
 
         success: function (response) {
             sessionStorage.setItem("login_reload", "true");
-            location.reload();
-
+          
+            if (model.ReturnUrl != "") {
+                location.href = model.ReturnUrl;
+            }
+            else {
+                location.reload();
+            }
         },
         failure: function (response) {
             FailToast();

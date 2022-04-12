@@ -13,8 +13,10 @@ namespace ASP.NET_Humans.Controllers
         {
             return View();
         }
-        public IActionResult Error_403()
+       
+        public async Task<IActionResult> Error_403(string returnUrl = null)
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
     }

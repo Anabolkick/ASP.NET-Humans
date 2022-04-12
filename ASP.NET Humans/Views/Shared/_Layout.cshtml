@@ -79,9 +79,15 @@
 		var login_reload = sessionStorage.getItem("login_reload");
 		if (login_reload) {
 			sessionStorage.removeItem("login_reload");
-			@Html.Raw(TempData["JavaScriptFunction"])
+			@Html.Raw(TempData["LoginStatusToast"])
 		}
 	});
+
+
+	@{if (TempData["ActiveToast"] != null)
+	{
+	    @Html.Raw(TempData["ActiveToast"])
+	}}
 </script>
 
 

@@ -86,24 +86,19 @@ namespace ASP.NET_Humans.Controllers
 
             if (result.Succeeded)
             {
-                return Problem("Email confirmed successfully!");
+                TempData["ActiveToast"] = "SuccessToast('Email confirmed successfully!');";
+                return RedirectToAction(controllerName:"Home", actionName:"Index");   //TODO my account
             }
             else
             {
-                return Problem("Error while confirming your email!" + "\n" + result.Errors);
+                TempData["ActiveToast"] = $"FailToast('Error while confirming your email!+ {result.Errors}');";
+                return RedirectToAction(controllerName: "Home", actionName: "Index");
             }
         }
-
-        [AllowAnonymous]
-        public IActionResult Login(string returnUrl = null)
-        {
-            ViewBag.ReturnUrl = returnUrl;
-            return PartialView("_Login", new LoginViewModel { ReturnUrl = returnUrl });
-        }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -116,35 +111,19 @@ namespace ASP.NET_Humans.Controllers
                 else
                 {
                     result = SignInResult.Failed;
-                    TempData["JavaScriptFunction"] = "FailToast('Can`t find account with this login/email!');";
-                    return Ok();
+                    TempData["LoginStatusToast"] = "FailToast('Can`t find account with this login/email!');";
+                    return;
                 }
 
                 if (result.Succeeded)
                 {
-                    if (string.IsNullOrEmpty(model.ReturnUrl) || Request.Path == model.ReturnUrl)
-                    {
-                        TempData["JavaScriptFunction"] = "SuccessToast('You have successfully logged in.');";
-                        return Ok();
-                    }
-                    else if(!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
-                    {
-                        TempData["JavaScriptFunction"] = "SuccessToast('You have successfully logged in.');";
-                        return Redirect(model.ReturnUrl);
-                    }
-                    else
-                    {
-                        TempData["JavaScriptFunction"] = "SuccessToast('You have successfully logged in.');";
-                        return RedirectToAction("Index", "Home");
-                    }
+                    TempData["LoginStatusToast"] = "SuccessToast('You have successfully logged in.');";
                 }
                 else
                 {
-                    TempData["JavaScriptFunction"] = "FailToast('Incorrect password!');";
-                    return Ok();
+                    TempData["LoginStatusToast"] = "FailToast('Incorrect password!');";
                 }
             }
-            return Ok();
         }   
 
         [HttpPost]
