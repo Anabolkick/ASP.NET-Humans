@@ -79,10 +79,11 @@
                             </tr>
                             <tr>
                                 <td>
-	                                <form>
-		                                <button type="button" class="btn btn-secondary" onclick="SuccessToast('@mod.Name was successful hired');"> Hire </button>
-		                                <button type="button" class="btn btn-secondary" onclick="FailToast('@mod.Name cant`t be hired.');"> Hire </button>
-	                                </form>
+                                    <form>
+                                        <a class="btn btn-secondary" asp-route-workerId="@mod.Id.ToString()" asp-action="HireWorker" onclick="SuccessToast('@mod.Name was successful hired');"> Hire </a>
+                                        @*<button type="button" class="btn btn-secondary" onclick="SuccessToast('@mod.Name was successful hired');"> Hire </button>
+                                        <button type="button" class="btn btn-secondary" onclick="FailToast('@mod.Name cant`t be hired.');"> Hire </button>*@
+                                    </form>
                                 </td>
                             </tr>
                         </table>
@@ -93,8 +94,8 @@
         <br />
     </div>
     <form method="post">
-        <button asp-controller="Home" asp-action="RefreshGeneratedPeople">Refresh New</button>
-        <button asp-controller="Home" asp-action="RefreshSystemPeople">Refresh System</button>
+        <button asp-action="RefreshGeneratedPeople">Refresh New</button>
+        <button asp-action="RefreshSystemPeople">Refresh System</button>
     </form>
 </body>
   

@@ -154,13 +154,9 @@ namespace ASP.NET_Humans.Controllers
         {
             var login = User.Identity.Name;
 
-            if (User.Identity is { IsAuthenticated: false })
+            if (User.Identity is { IsAuthenticated: false } || login == null)
             {
-                return Redirect("~/Home/");
-            }
-            if (login == null)
-            {
-                return Redirect("~/Home/");
+                return RedirectToAction("Error_403", "Error", new {returnUrl = "/Account/GetPeople"});
             }
 
             User user = userManager.FindByNameAsync(login).Result;
@@ -205,26 +201,45 @@ namespace ASP.NET_Humans.Controllers
             #region If workers < 4 --> generate new
             if (workers.Count < 4)
             {
-                workers = GetNewWorkers(user, 4 - workers.Count).Result;
-                if (workers == null)
+                var new_workers = GetNewWorkers(user, 4 - workers.Count).Result;
+                if (new_workers == null)
                 {
                     return BadRequest($"Error while generate workers. Please, refresh the page and try again");
                 }
+
+                foreach (var worker in new_workers)
+                {
+                    worker.IsHired = false;
+                    worker.UserId = user.Id;
+                    _DBcontext.Workers.Add(worker);
+                }
+                await _DBcontext.SaveChangesAsync();
+
+                workers.AddRange(new_workers);
+
+                foreach (var worker in workers)
+                {
+                    workersId.Add(worker.Id.ToString());
+                }
+
+                TempData["Workers"] = workersId;
             }
-            #endregion
-
-            foreach (var worker in workers)
-            {
-                worker.IsHired = false;
-                worker.UserId = user.Id;
-                _DBcontext.Workers.Add(worker);
-                workersId.Add(worker.Id.ToString());
-            }
-
-            await _DBcontext.SaveChangesAsync();
-            TempData["Workers"] = workersId;
-
             return View(workers);
+            #endregion
+        }
+
+        public async Task<IActionResult> HireWorker(string workerId)
+        {
+            var workerInDb = _DBcontext.Workers.Where(w => w.Id.ToString() == workerId);
+            Worker worker = workerInDb.FirstOrDefault();
+            if (worker != null)
+            {
+                worker.IsHired = true;
+                _DBcontext.Update(worker);
+                await _DBcontext.SaveChangesAsync();
+            }
+
+            return RedirectToAction("GetPeople");
         }
 
         private async Task<List<Worker>> GetNewWorkers(User user, int count) //user to save in user folder

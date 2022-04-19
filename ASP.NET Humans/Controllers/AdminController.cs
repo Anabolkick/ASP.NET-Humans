@@ -23,9 +23,6 @@ namespace ASP.NET_Humans.Controllers
         public IActionResult UsersList()
         {
             var users = userManager.Users.ToList();
-            //var assa = userManager.FindByNameAsync("assa").Result;
-            //   assa.LockoutEnd = DateTimeOffset.Now + TimeSpan.FromDays(10);
-            //   Task.Run(() => userManager.UpdateAsync(assa)).Wait();
             return View(users);
         }
 

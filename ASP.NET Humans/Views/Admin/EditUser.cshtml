@@ -80,18 +80,3 @@
 </form>
 
 
-<!--Not static fileds-->
-@*@{
-        if (Model.LockoutEnabled && Model.LockoutEnd != null)
-        {
-            if (Model.LockoutEnd.Value >= DateTimeOffset.UtcNow)
-            {
-                <tr>
-                    <td style="color: red">Blocked </td>
-                    <td>@Model.LockoutEnd.Value</td>
-                </tr>
-            }
-        }
-    }*@
-
-
