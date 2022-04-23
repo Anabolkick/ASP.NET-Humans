@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASP.NET Humans", "ASP.NET H
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonGeneratorApi", "PersonGeneratorApi\PersonGeneratorApi.csproj", "{4E794A1D-C8ED-42A4-8C73-7F6C3ED9F521}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker", "Worker\Worker.csproj", "{9A9BA148-0266-4162-BEBD-4EBAEF35391C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Worker", "Worker\Worker.csproj", "{9A9BA148-0266-4162-BEBD-4EBAEF35391C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

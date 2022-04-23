@@ -1,80 +1,84 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>@ViewData["Title"]</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewData["Title"]</title>
 
-	<link rel="stylesheet" href="~/css/toast.css">
-	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="~/css/toast.css">
-	<link rel="stylesheet" href="~/css/site.css" />
-	<link rel="icon" href="/logo.ico" type="image/x-icon">
-	<link rel="shortcut icon" href="/logo.ico" type="image/x-icon">
+    <link rel="stylesheet" href="~/css/toast.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/toast.css">
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="icon" href="/logo.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/logo.ico" type="image/x-icon">
 </head>
 <body>
-<header>
-	<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-		<div class="container">
-			<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HOME</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-			        aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between flex-grow-1">
-				<ul class="navbar-nav">
-					<li class="nav-item">
-						<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="GetPeople">Generate People</a>
-					</li>
-				</ul>
-				<ul class="navbar-nav ml-auto">
-					@if (User.Identity.IsAuthenticated){
-						<li class="nav-item">
-							<b> @User.Identity.Name </b>
-						</li>
-						<br />
-						<li class="nav-item">
-							<form method="post" asp-controller="Account" asp-action="Logout">
-								<input type="submit" value="Logout"/>
-							</form>
-						</li>}
-					else{
-						<li class="nav-item">
-                            <a class="nav-link text-dark" data-toggle="modal" onclick="ShowLoginModal" data-target="#LoginModal">Login</a> 
-                            <partial name="_Login"/>
-                            @*@await Html.PartialAsync("_Login")*@
-                            @*<button onclick="ShowLoginModal">Login</button>*@
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HOME</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between flex-grow-1">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
-						</li>}
-				</ul>
-			</div>
-		</div>
-	</nav>
-</header>
-<div class="container">
-	<main role="main" class="pb-3">
-		@Html.AntiForgeryToken()
-		@RenderBody()
-	</main>
-	</div>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="HireWorkers">Generate People</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ml-auto">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <b> @User.Identity.Name </b>
+                            </li>
+                            <br />
+                            <li class="nav-item">
+                                <form method="post" asp-controller="Account" asp-action="Logout">
+                                    <input type="submit" value="Logout" />
+                                </form>
+                            </li>
+}
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" data-toggle="modal" onclick="ShowLoginModal" data-target="#LoginModal">Login</a>
+                                <partial name="_Login" />
+                                @*@await Html.PartialAsync("_Login")*@
+                                @*<button onclick="ShowLoginModal">Login</button>*@
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                            </li>
+}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @Html.AntiForgeryToken()
+            @RenderBody()
+        </main>
+    </div>
 
-	<footer class="border-top footer text-muted">
-		<div class="container">
-			&copy; | 2021 - ASP.NET_Humans | <a href="https://github.com/Anabolkick">Developer</a>
-		</div>
-	</footer>
-	<script src="~/lib/jquery/dist/jquery.min.js"></script>
-	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	<script type="text/javascript" src="~/js/toast.js"></script>
-	<script src="~/js/site.js" asp-append-version="true"></script>
-<script src="~/js/login.js" asp-append-version="true"></script>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; | 2021 - ASP.NET_Humans | <a href="https://github.com/Anabolkick">Developer</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="~/js/toast.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/login.js" asp-append-version="true"></script>
 
-<script type="text/javascript">
+    <script type="text/javascript">
 	$(document).ready(function() {
 		var login_reload = sessionStorage.getItem("login_reload");
 		if (login_reload) {
@@ -88,10 +92,10 @@
 	{
 	    @Html.Raw(TempData["ActiveToast"])
 	}}
-</script>
+    </script>
 
 
-@await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
 

@@ -149,14 +149,14 @@ namespace ASP.NET_Humans.Controllers
         }
         #endregion
 
-        #region GetPeople
-        public async Task<IActionResult> GetPeople()         
+        #region HireWorkers
+        public async Task<IActionResult> HireWorkers()         
         {
             var login = User.Identity.Name;
 
             if (User.Identity is { IsAuthenticated: false } || login == null)
             {
-                return RedirectToAction("Error_403", "Error", new {returnUrl = "/Account/GetPeople"});
+                return RedirectToAction("Error_403", "Error", new {returnUrl = "/Account/HireWorkers"});
             }
 
             User user = userManager.FindByNameAsync(login).Result;
@@ -239,7 +239,7 @@ namespace ASP.NET_Humans.Controllers
                 await _DBcontext.SaveChangesAsync();
             }
 
-            return RedirectToAction("GetPeople");
+            return RedirectToAction("HireWorkers");
         }
 
         private async Task<List<Worker>> GetNewWorkers(User user, int count) //user to save in user folder
@@ -282,7 +282,7 @@ namespace ASP.NET_Humans.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RefreshGeneratedPeople()
+        public async Task<IActionResult> RefreshGeneratedWorkers()
         {
             var login = User.Identity.Name;
 
@@ -302,12 +302,12 @@ namespace ASP.NET_Humans.Controllers
             }
             await _DBcontext.SaveChangesAsync();
 
-            return RedirectToAction("GetPeople");
+            return RedirectToAction("HireWorkers");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RefreshSystemPeople()
+        public async Task<IActionResult> RefreshInSystemWorkers()
         {
             //Проверка, есть ли в системе минимум 4 рабочих
             var sysCount = _DBcontext.Workers.Count(w => w.UserId == "system");
@@ -363,7 +363,7 @@ namespace ASP.NET_Humans.Controllers
 
 
             await _DBcontext.SaveChangesAsync();
-            return RedirectToAction("GetPeople");
+            return RedirectToAction("HireWorkers");
         }
         #endregion
     }
